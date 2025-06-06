@@ -1,0 +1,207 @@
+\PassOptionsToPackage{svgnames}{xcolor}
+\documentclass[nonacm,natbib=false]{acmart}
+
+\usepackage{graphicx}
+\usepackage[inline]{enumitem}
+\usepackage{listings}
+\usepackage{ebproof}
+\usepackage[acronym]{glossaries}
+\usepackage{hyperref}
+% \hypersetup{
+% 	bookmarksdepth = 1,
+% 	colorlinks = {true},
+% 	citecolor = {ForestGreen},
+% 	linkcolor={ForestGreen},
+% 	urlcolor={gray},
+% }
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\lstset{basicstyle=\normalfont\ttfamily\small}
+
+\usepackage[sortcites,style=numeric-comp,maxbibnames=99, maxcitenames=99]{biblatex}
+\addbibresource{references.bib}
+
+%chsp: there is already \negnf{} for the negation normal form
+%\newcommand{\NNF}{\ensuremath{\text{\normalshape\sffamily NF}_\neg}}
+\newcommand{\branch}[0]{\ensuremath{\mathrel{\|}}}
+\newcommand{\bigbranch}[0]{\ensuremath{\big\|}}
+
+\newcommand{\tmp}{\ensuremath{\mathit{tmp}}}
+\newcommand{\msg}{\ensuremath{\mathit{msg}}}
+\newcommand{\pub}{\ensuremath{\mathit{pub}}}
+\newcommand{\fresh}{\ensuremath{\mathit{fresh}}}
+\newcommand{\sortnat}{\ensuremath{\mathit{nat}}}
+\newcommand{\lfacts}{\ensuremath{\textsf{lfacts}}}
+\newcommand{\pfacts}{\ensuremath{\textsf{pfacts}}}
+
+\newcommand{\nat}{\ensuremath{\mathbb{N}}}
+\newcommand{\rat}{\ensuremath{\mathbb{Q}}}
+\newcommand{\cnstrs}{\ensuremath{\mathbb{C}}}
+\newcommand{\vars}{\ensuremath{\mathcal{V}}}
+\newcommand{\consts}{\ensuremath{\mathcal{C}}}
+\newcommand{\tvar}{\ensuremath{\vars_{\tmp}}}
+\newcommand{\msgvar}{\ensuremath{\vars_{\msg}}}
+\newcommand{\pubvar}{\ensuremath{\vars_{\pub}}}
+\newcommand{\substs}{\ensuremath{\mathbb{S}}}
+\newcommand{\ofsort}[2]{\ensuremath{#1{:}#2}}
+\newcommand{\const}[1]{\text{`\ensuremath{#1}'}}
+\newcommand{\fr}{\text{\textasciitilde}}
+
+\newcommand{\fv}{\ensuremath{\mathit{fv}}}
+
+\newcommand{\edge}{\ensuremath{\rightarrowtail}}
+\newcommand{\fact}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\factat}{\ensuremath{\vartriangleright}}
+\newcommand{\chain}{\ensuremath{\dashrightarrow}}
+\newcommand{\code}[1]{\ensuremath{\text{\sffamily #1}}}
+\newcommand{\rto}{\ensuremath{\to^*}}
+\newcommand{\lrule}[1]{\ensuremath{\mathrel{-\mkern-4mu[#1]\mkern-8mu\to}}}
+\newcommand{\prems}{\ensuremath{\mathit{prems}}}
+\newcommand{\acts}{\ensuremath{\mathit{acts}}}
+\newcommand{\concs}{\ensuremath{\mathit{concs}}}
+\newcommand{\trace}{\ensuremath{\mathit{trace}}}
+\newcommand{\dgraphs}{\ensuremath{\mathit{dgraphs}}}
+\newcommand{\idx}{\ensuremath{\mathit{idx}}}
+\newcommand{\BC}{\ensuremath{\textsc{BC}}}
+\newcommand{\IH}{\ensuremath{\textsc{IH}}}
+\newcommand{\R}{\ensuremath{\mathcal{R}}}
+
+\newcommand{\RFresh}[0]{\ensuremath{\textsc{Fresh}}}
+\newcommand{\K}[0]{\ensuremath{\fact{K}}}
+\newcommand{\Kup}[0]{\ensuremath{\fact{!K}^{\uparrow}}}
+\newcommand{\Kdown}[0]{\ensuremath{\fact{!K}^{\downarrow}}}
+\newcommand{\Fr}{\fact{Fr}}
+\newcommand{\In}{\fact{In}}
+\newcommand{\Out}{\fact{Out}}
+
+\newcommand{\CSR}[1]{\ensuremath{\mathcal{S}_{#1}}}
+\newcommand{\CSRST}[1]{\CSR{\mathsf{\uppercase{#1}}}}
+\newcommand{\CSRDG}[1]{\ensuremath{\mathcal{DG}_{#1}}}
+\newcommand{\CSRN}[1]{\ensuremath{{\mathcal{N}{#1}}}}
+\newcommand{\SPrem}{\CSR{\textbf{Prem}}}
+\newcommand{\SEdge}{\CSR{\edge}}
+\newcommand{\SUnif}{\CSR{\approx}}
+\newcommand{\SCyc}{\CSR{\circlearrowleft}}
+\newcommand{\SCycBot}{\CSR{\circlearrowleft,\bot}}
+\newcommand{\SBot}{\CSR{\bot}}
+\newcommand{\SWeaken}{\CSR{W}}
+\newcommand{\SCut}{\CSR{\Delta}}
+\newcommand{\ginstRules}{\ensuremath{\lceil P \rceil^{\mathcal{RDH}_e}_{insts}}}
+\newcommand{\ginstRulesSend}{\ensuremath{\ginstRules \cup \{ \textsc{SEND} \}}}
+
+\newcommand{\sols}{\mathit{sols}}    % solutions
+\newcommand{\factsig}{\ensuremath{\Sigma_\mathit{Fact}}}
+\newcommand{\ts}{\ensuremath{\mathcal{T}}}
+
+\newcommand{\dom}{\mathrm{dom}}
+\newcommand{\map}{\rightharpoonup}
+\newcommand{\fun}{\rightarrow}
+\newcommand{\setof}{\mathrm{set}}
+\newcommand{\setc}[2]{\{ #1 \mid #2 \}}
+\newcommand{\idrel}{\mathrm{Id}}
+\newcommand{\normf}{\ensuremath{{\downarrow}_{AX}}}
+\newcommand{\variants}[1]{\ensuremath{\lceil #1 \rceil}_{AX}}
+
+\newcommand{\limplies}{\Longrightarrow}
+\newcommand{\negnf}[1]{\widehat{#1}}
+
+\newcommand{\tsat}[1]{\vDash_{#1}}
+\newcommand{\tsatE}{\tsat{E}}
+\newcommand{\tr}{\mathit{tr}}
+
+\newtheorem{definition}{Definition}
+\newtheorem{lem}{Lemma}
+\newtheorem*{lem*}{Lemma}
+\newtheorem{thm}{Theorem}
+\newtheorem*{thm*}{Theorem}
+\newtheorem{cor}{Corollary}
+\newtheorem{prop}{Proposition}
+\newtheorem*{prop*}{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+
+\begin{document}
+\pagestyle{plain}
+
+\title{Rule Variant Restrictions for the Tamarin Prover}
+
+\author{Felix Linker}
+\affiliation{%
+  \institution{Department of Computer Science, ETH Zurich}
+  \city{Zürich}
+  \country{Switzerland}}
+\email{flinker@inf.ethz.ch}
+
+\maketitle
+
+\section{Introduction}
+
+Tamarin \cite{CAVtamarin,CSFtamarin} is a model checker for security protocol verification, which incorporates a constraint solving algorithm based on symbolic backwards search.
+It was originally introduced in two doctoral theses \cite{TamarinThesisInduction,TamarinThesisConstraintSolving}.
+Tamarin operates in the so-called \emph{symbolic model} were cryptographic messages are represented by terms, and cryptographic operations by equations on these terms.
+The set of equations of a Tamarin theory are the theory's equational theory, and all reasoning happens modulo this equational theory.
+Tamarin only considers equational theories with specific properties.
+These properties allow Tamarin to:
+\begin{enumerate}
+  \item represent all terms in a unique normal form, and
+  \item reason modulo the equational theory by considering finite sets of \emph{variants} of terms.
+\end{enumerate}
+
+These variants of terms are computed in a pre-computation phase.
+In this paper, we introduce a pruning mechanism for variants that significantly reduces Tamarin's search space and prove this mechanism's soundness.
+We experienced significant performance improvements when using this pruning mechanism, in particular when modelling protocols that use Diffie-Hellman group operators.
+
+\section{Background}
+
+\input{bg.tex}
+
+\section{Rule Variant Restrictions}
+
+\begin{definition} \label{def:fresh-contradictory}
+  Let $r = [ p_1, \dots, p_n] \lrule{\dots} [\dots]$ be a protocol rule and $\variants{r}^\R = \{(r_i, \tau_i)\}_{m \in \nat}$ a set of associated variants for a rewriting system $\R$ and associate and commutative equations $AX$.
+  A variant $(r_i, \tau_i) \in \variants{r}^\R$ is \emph{fresh-contradictory} if $r$ has two distinct premises $p_i = \fact{F}(\dots, t, \dots)$ ($\fact{F} \neq \Fr$) and $p_j = \Fr(x)$ such that $x\tau_i \sqsubseteq t\tau_i \normf^\R$.
+\end{definition}
+
+We write $\variants{t}^{\R,\bot} \subseteq \variants{t}^\R$ for the fresh-contradictory variants of a term $t$.
+Again, we extend this notion to multiset rewriting rules and sets of multiset rewriting rules.
+
+\begin{lemma} \label{lem:ndg-eq}
+  For every protocol model $(R, E)$ where $\R^\simeq \cup AX$ is an equational representation for $=_E$ and $AX$ only contains equations for associativity and commutativity:
+  $$\{ dg\normf^\R \mid dg \in \dgraphs_{AX}(\variants{R}^\R) \} = \{ dg\normf^\R \mid dg \in \dgraphs_{AX}(\variants{R}^\R \setminus \variants{R}^{\R,\bot})\}.$$
+\end{lemma}
+
+\begin{proof}
+  Let $NDG := \{ dg\normf^\R \mid dg \in \dgraphs_{AX}(\variants{R}^\R) \}$ and $NDG_{\neg\bot} := \{ dg\normf^\R \mid dg \in \dgraphs_{AX}(\variants{R}^\R \setminus \variants{R}^{\R,\bot})\}$.
+  It is clear that $NDG_{\neg\bot} \subseteq NDG$.
+  We show that $NDG \subseteq NDG_{\neg\bot}$ by contradiction.
+  Presume that there is a dependency graph $dg = (I, D) \in NDG \setminus NDG_{\neg\bot}$.
+  By assumption, we know that all rule instance $ri \in I$ are $\normf^\R$-normal (as $dg$ is $\normf^\R$-normal).
+  Thus, by the finite variant property, we know that for each rule instance $ri \in I$ there must be a rule variant $(r, \tau) \in \variants{R}^\R$ so that $ri =_{AX} r\sigma$ for some substitution $\sigma$ (note that $r$ is $\normf^\R$-normal by definition).
+  There must be some rule instance $ri$ for which its associated variant $(r, \tau)$ (as per above) is in $\variants{R}^{\R,\bot}$.
+  If not, $dg$ would be in $NDG_{\neg\bot}$.
+  We fix such a rule instance $ri$ and associated variant $(r, \tau)$.
+
+  As $r$ is a fresh-contradictory variant, there must be some fresh variable $x$ and term $t$ occurring in $r\sigma$ such that $x \sqsubseteq t\sigma$ and $x$ is introduced in $r$, i.e., $r\sigma$ has a $\Fr(x)$ premise.
+  Observe that $x \sqsubseteq ri$ since $ri =_{AX} r\sigma$ and equations in $AX$ can never remove variables from a term.
+  As $ri$ is $\normf^\R$-normal (cannot be reduced), $t$ in $ri$ must have been constructed using $x$.
+  Therefore, there must be another rule instance that introduces $x$ as a fresh variable to construct $t$ and thus also contains a premise $\Fr(x)$.
+  This, however, contradicts that instances of $\RFresh$ are unique.
+\end{proof}
+
+We can use this theorem to specialize Theorem~\ref{thm:reasoning-mod-ax} into the following one.
+
+\begin{theorem} \label{thm:reasoning-mod-fresh}
+    For every guarded trace property $\varphi$ and protocol model $(R, E)$ where $\R^\simeq \cup AX$ is an equational representation for $=_E$ and $AX$ only contains equations for associativity and commutativity:
+    $$R \tsatE^\forall \varphi \iff \{ \trace(dg) \mid dg \in dgraphs_{AX}(\variants{R}^\R \setminus \variants{R}^{\R,\bot}), dg~\text{is}~\normf^\R\text{-normal} \} \tsat{AX}^\forall \varphi.$$
+\end{theorem}
+
+\begin{proof}
+  Follows directly from Theorem~\ref{thm:reasoning-mod-ax} and Lemma~\ref{lem:ndg-eq}.
+\end{proof}
+
+Theorem~\ref{thm:reasoning-mod-fresh} allows us to prune all fresh-contradictory variants during Tamarin's precomputations.
+
+\printbibliography
+
+\end{document}

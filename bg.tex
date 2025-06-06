@@ -1,0 +1,216 @@
+In this paper, we introduce the Tamarin prover following \cite{TamarinThesisInduction}.
+We omit certain details for clarity.
+For full details, we refer the reader to \cite{TamarinThesisInduction}.
+
+\subsection{Preliminaries}
+
+An \emph{order-sorted signature} $\Sigma = (S, \leq, F)$ consists of a set of sorts $S$, a partial order $(\leq) \subseteq S \times S$ on the sorts, and a set of function symbols $F$.
+Every sort $s \in S$ has an infinite set of associated variables $\vars_s$ and constants $\consts_s$, which are all pairwise disjoint.
+We write $\ofsort{v}{s}$ for $v \in \vars_s$ and $\vars = \bigcup_{s \in S} \vars_s$ for the set of all variables.
+Functions in $F$ have the form $f: s_1 \times \dots \times s_n \rightarrow s$ (where $s_1, \dots, s_n, s \in S$).
+We require that every connected component $C$ in $(S,\leq)$ has a supremum, which we denote by $\mathit{top}(s)$ for $s \in C$.
+Furthermore, we require that if $f:s_1 \times \dots \times s_n \rightarrow s \in F$ then $f:\mathit{top}(s_1) \times \dots \times \mathit{top}(s_n) \rightarrow \mathit{top}(s) \in F.$
+For $s \in S$, we use $\ts_\Sigma^s$ to denote the terms of sort $s$.
+The set of all terms of an order-sorted signature is $\ts_\Sigma = \bigcup_{s \in S} \ts_\Sigma^s$.
+A term is \emph{ground} if it contains no variables.
+
+A substitution is function $\sigma: \vars \to \ts_\Sigma$ mapping variables to terms.
+We require that substitutions respect sorts, i.e., variables of sort $s$ must be mapped to terms of sort $s' \leq s$.
+We extend substitutions homomorphically to terms and other constructs (to be defined later) as usual, and write $t\sigma$ for an application of $\sigma$ to a term $t \in \ts_\Sigma$.
+A \emph{valuation} is a substitution to ground terms.
+Valuations can also be defined as explicit lists.
+In that case, variables not mapped in that list are irrelevant and can map to arbitrary terms.
+
+\subsection{Protocol Specifications}
+\label{subsec:protocol-specs}
+
+Tamarin works in the \emph{symbolic model}, where protocol messages are represented as elements of a term algebra.
+An equational theory encodes the semantics of these terms.
+Along with the equational theory, the protocol and attacker behavior are specified by a set of multiset rewriting rules.
+A Tamarin protocol model is a pair of an equational theory and a set of multiset rewriting rules.
+
+\subsubsection{Equational Theories}
+
+Protocol models are defined with respect to an order-sorted signature $\Sigma$ and a set of equations $E$ that have the form $s \simeq t$.
+Typically, the equations model cryptographic operations and their relationships.
+$\Xi = (\Sigma, E)$ is an \emph{equational presentation}.
+An \emph{equational theory} $=_\Xi$ is the smallest congruence relation over $\Sigma$ containing all instances of $E$.
+We often leave $\Sigma$ implicit and identify $\Xi$ by $E$.
+Two terms $s$ and $t$ and \emph{equal modulo $E$} if $t =_E s$.
+We will use the $E$-subscript to denote operators, e.g., $\in_E$ modulo $E$.
+
+In the following, we fix the sorts in $\Sigma$ to $\msg$, $\fresh$, $\pub$, and $\sortnat$.
+$\fresh$, $\pub$, and $\sortnat$ are subsorts of $\msg$.
+In particular, sort $\fresh$ models fresh, unguessable values such as cryptographic random numbers.
+We sometimes prefix variables with a sort-specific symbol.
+Variables in $\fresh$ are prefixed with $\fr$, variables in $\pub$ with $\$$, and variables in $\sortnat$ with $\%$.
+When not explicitly mentioned and not clear from context, a variable without prefix or sort annotation is of sort $\msg$.
+
+\subsubsection{Term Rewriting}
+
+A \emph{position} $p$ in a term is a list of indices.
+We write $t|_p$ for \emph{$t$'s subterm at position $p$}, and define it inductively as:
+\begin{equation*}
+  t|_p := \begin{cases}
+    t & p = [] \\
+    t_{i_0}|_{[i_1, \dots, i_n]} & p = [i_0, i_1, \dots, i_n], t = f(t_1, \dots, t_k), 1 \leq i_0 \leq k \\
+    \bot & \text{otherwise}
+  \end{cases}
+\end{equation*}
+
+We write $t[s]_p$ to denote the term obtained from replacing $t_p$ in $t$ with $s$.
+We say that $t$ is a \emph{syntactic subterm} of $t'$ if there exists a position $p$ such that $t'|_p = t$.
+Whenever this is the case, we write $t \sqsubseteq t'$.
+
+A \emph{rewrite rule} is an ordered pair of terms $l \to r$.
+A \emph{rewriting system} $\R$ is a set of rewrite rules.
+The corresponding \emph{rewrite relation} $\to_R$ is defined as $s \to_R t$ if there is a position $p$ in $s$, rewrite rule $l \to r \in \R$ and substitution $\sigma$ such that $s|_p = l\sigma$ and $t = s[r\sigma]_p$.
+
+A rewriting system $\R$ is \emph{terminating} if there is no infinite sequence of terms $(t_i)_{i \in \nat}$ such that $t_i \to_R t_{i+1}$ ($i \in \nat$).
+$\R$ is \emph{confluent} when for all terms $t$, $s_1$, and $s_2$, if $t \to_R^* s_1$ and $t \to_R^* s_2$ then there exists a term $t'$ such that $s_1 \to_R^* t'$ and $s_2 \to_R^* t'$.
+$\R$ is \emph{convergent} if it is terminating and confluent.
+We use $t{\downarrow}_R$ to denote a term $t$'s normal form in a convergent rewriting system $\R$, which is the term $t'$ such that $t \to_R^* t'$ and there exists no term $t''$ such that $t' \to_R t''$.
+Observe that every term's normal form is uniquely determined.
+
+If an equational theory $E$'s equations can be oriented to a convergent rewriting system $\R$, then $t =_E s$ if and only if $t{\downarrow}_R = s{\downarrow}_R$.
+Some equations, e.g., commutativity, cannot be oriented and in those cases, we split an equational theory $E$ into oriented rewriting rules $\R$ and unoriented equations $AX$.
+The \emph{rewrite relation} $\to_{\R,AX}$ is defined as $s \to_{\R,AX} t$ if there is a position $p$, a rewrite rule $l \to r \in \R$, and subtitution $\sigma$ such that $s|_p =_{AX} l\sigma$ and $t = s[r\sigma]_p$.
+We say that $\R$ is $AX$-convergent if $\to_{\R,AX}$ is terminating and confluent.
+We write $t\normf^\R$ to denote $t$'s normal form with respect to $\to_{\R,AX}$.
+$\R$ is $AX$-coherent when for all terms $t_1$, $t_2$, and $t_3$, if $t_1 \to_{\R,AX}^* t_2$ and $t_1 =_{AX} t_3$ then there exist terms $t_4$, $t_5$ such that $t_4 =_{AX} t_5$ and $t_2 \to^*_{\R,AX} t_4$ and $t_3 \to_{\R,AX}^+ t_5$.
+We write $\R^\simeq := \{ l \simeq r \mid l \to r \in \R \}$ for a rewriting system $\R$'s associated equational theory.
+% TODO: Simon here writes (\Sigma, \R^\simeq \cup AX) is an equational presentation of =_E, but I don't understand this really so opting for this definition. Need to check whether that's fine.
+If $\R^\simeq \cup AX = E$ and $\R$ is $AX$-convergent and $AX$-coherent, then $t =_E s$ if and only if $t\normf^\R =_{AX} s\normf^\R$.
+
+\subsubsection{Multiset Rewriting Rules}
+
+In Tamarin, state transitions are modeled using multiset rewriting rules.
+The global state consists of a multiset of ground facts, and the rewriting rules define how the state is updated.
+Facts are similar to predicates in first-order logic and are of the form $F(t_1, \dots, t_n)$.
+$F$ is a fact symbol from a fact signature $\factsig$, and $t_1, \dots, t_n$ are terms defined over the model's signature $\Sigma$.
+A fact is ground if all its terms are ground.
+Facts typically model the local state of participants or the network, e.g., who posses which keys, or what messages have been sent out on the network.
+We consider the special, reserved fact symbols $\Fr$, $\In$, $\Out$, $\Kup$, and $\Kdown$ of arity 1 in $\factsig$.
+These symbols respectively model generating a fresh, unguessable value, receiving and sending a message over an insecure network, and adversary reasoning.
+
+Multiset rewriting rules in Tamarin have the form $$[l_1, \dots, l_m] \lrule{a_1, \dots, a_n} [r_1, \dots, r_o].$$
+$l_i$, $a_j$, $r_k$ are facts and may use free variables ($1 \leq i \leq m$, $1 \leq j \leq n$, $1 \leq k \leq o$).
+$l_1, \dots, l_m$ are the rule's \emph{premises}, $a_1, \dots, a_n$ the rule's \emph{actions} (also called \emph{action facts}), and $r_1, \dots, r_o$ the rule's \emph{conclusions}.
+$[a_1, \dots, a_n]$ can be omitted when a rule has no actions.
+Rules can be instantiated by a substitution $\sigma$.
+One rule $ri$ is another rule $r$'s \emph{instance} if there exists a substitution $\sigma$ such that $r\sigma = ri$.
+We write $\prems(r)$, $\acts(r)$, and $\concs(r)$ for a rule $r$'s list of premises, actions, and conclusions respectively.
+A rule (instance) is ground if all its facts are ground.
+
+Facts are either persistent (preceded by a $!$) or linear.
+When a rule is applied, the linear facts in its premise are removed from the global state and replaced by the facts in its conclusion.
+Persistent facts are not consumed when used in a rule's premise.
+
+A set of multiset rewriting rules $P$ is a \emph{multiset rewriting system} if
+\begin{enumerate}[label=(\roman*)]
+  \item no rule uses a fresh constant,
+  \item no rule's premise contains an $\Out$, $\Kup$, or $\Kdown$ fact, and
+  \item no rule's conclusion contains a $\Fr$, $\In$, $\Kup$, or $\Kdown$ fact, and
+  \item all $\fresh$, $\msg$, and $\sortnat$ variables used in a rule's conclusion are introduced in a rule's premise.
+\end{enumerate}
+
+\paragraph{Built-In Rules}
+
+Tamarin uses a number of built-in rules to model the generation of random values and the adversary deduction following the model's equational theory $E$, the latter of which we refer to by $ND$ (normal form message deduction rules).
+The following rules model generating fresh values: $$\RFresh := [] \rightarrow [ \Fr(\ofsort{x}{\fresh}) ].$$
+Notably, the following rule is in $ND$:
+$$[ \fact{Fr}(\ofsort{x}{\fresh}) ] \lrule{\Kup(\ofsort{x}{\fresh})} [ \Kup(\ofsort{x}{\fresh}) ].$$
+
+\subsection{Semantics}
+\label{subsec:semantics}
+
+\subsubsection{Executions and Traces}
+
+Given a multiset rewriting system $P$, adversary deduction rules $ND$, an equational theory $E$, and $R = P \cup ND \cup \{ \RFresh \}$, the tuple $(R,E)$ is a \emph{Tamarin} or \emph{protocol model}.
+Tamarin models induce a labeled state transition system.
+The initial state is the empty multiset $\emptyset^\sharp$.
+A state transition is the application of a ground rule instance $ri = l \lrule{a} r$.
+We use $\lfacts(x)$ and $\pfacts(x)$ to denote the linear and persistent facts respectively in $x$.
+$ri$ can be applied if its premises are contained in in the global state, which is then updated accordingly.
+Formally, the state transition relation $\Rightarrow_{(R, E)}$ is defined as:
+\begin{align*}
+  S \Rightarrow_{(R, E)} (S \setminus^\sharp \lfacts(l)) \cup^\sharp r && \text{if}~\lfacts(l) \subseteq^\sharp S, \pfacts(r) \subseteq \setof(S)
+\end{align*}
+
+An \emph{execution} is a sequence of labeled state transitions.
+We only consider executions where each instance of $\RFresh$ is unique.
+Each execution has a corresponding \emph{trace}, which is the list of sets of action facts labeling each transition.
+The semantics of a Tamarin model is its set of traces.
+
+\subsubsection{Dependency Graphs}
+
+Dependency graphs capture the sequence of rule applications and dependencies between rule premises and conclusions.
+They are closely related to the constraint systems used in Tamarin's protocol analysis, and they enable effective proof search.
+
+\begin{definition}[Dependency graph] \label{def:dependency-graph}
+  Let $(R, E)$ be a Tamarin model.
+  A \emph{dependency graph} is a tuple $dg = (I, D)$ where $I$ is a finite list of ground rule instances in $R$, and $D \subseteq \nat^2 \times \nat^2$.
+  A rule's index in $I$ is its \emph{timepoint}.
+  We write $(i,u) \edge (j,v)$ for $((i,u), (j,v)) \in D$, when $D$ is clear from the context.
+  Here, $(i, u)$ denotes the conclusion with index $u$ of the rule with index $i$ in $I$.
+  Similarly, $(j,v)$ denotes the premise with index $v$ of the rule with index $j$.
+  We require that edges correctly connect premises and conclusions, i.e., $i < j$ and the conclusion $(i, u)$ is equal modulo $E$ to the premise $(j, v)$.
+  Furthermore, each premise must have exactly one incoming edge, every linear conclusion has at most one outgoing edge, and instances of $\RFresh$ are unique.
+\end{definition}
+
+\begin{definition}[Trace]
+  A \emph{trace} induced by a dependency graph $dg = (I, D)$ is a list $\trace(dg)$ of sets of action labels.
+  Concretely, $\trace(dg)$ is of length $|I|$ and every index $i$ corresponds to the set of action labels at timepoint $i$, i.e., to $\setof(\acts(I_i))$.
+\end{definition}
+
+One can show that the dependency graphs of a model $(R,E)$ induce the same set of traces as the set of traces derived from the model's executions (\cite[Theorem 3]{TamarinThesisInduction}).
+We write $\dgraphs_E(R)$ for all dependency graphs of a protocol model $(R, E)$ and $\trace(dg)$ for a dependency graph's associated trace.
+
+\subsection{Protocol Properties}
+\label{subsec:properties}
+
+In Tamarin, protocol properties are expressed as first-order logic \emph{trace properties}, which are given by closed \emph{trace formulas}.
+To reason about temporal ordering of events, we introduce a new sort $\tmp$, incomparable to $\msg$, for temporal values and variables.
+The constants of $\tmp$ are the elements of $\rat$.
+
+For a fact $f$, temporal variables $i$ and $j$ representing timepoints, and terms $t$ and $u$, atomic trace formulas are:
+\begin{enumerate}
+  \item false $\bot$,
+  \item action formulas $f@i$, and
+  \item the predicates for
+  \begin{enumerate}
+    \item timepoint equality $i \doteq j$,
+    \item timepoint ordering $i < j$,
+    \item term equality $t = u$, and
+    \item subterm relation $t \sqsubset u$ (also written $t \ll u$; introduced in \cite{TamarinSubterms}).
+  \end{enumerate}
+\end{enumerate}
+Trace formulas can be combined with the logical connectives $\neg$, $\land$ and $\fresh$ and $\msg$ variables can be existentially quantified.
+As usual, we use $\lor$, $\implies$ and universal quantification as derived connectives.
+We write $\fv(\varphi)$ for the free variables of a formula $\varphi$.
+A trace formula is \emph{guarded} if all occurrences of existential or universal quantifiers are of the form $\exists \vec{x}.\, f@i \land \varphi$ or $\forall \vec{x}.\, f@i \Longrightarrow \varphi$, where $\setof(\vec{x}) \subseteq \fv(f@i)$, i.e., all bound variables are free in the action formula $f@i$.
+
+Given a valuation $\theta$ of the free variables of $\varphi$, we write $(tr, \theta) \tsatE \varphi$ to mean that the trace $tr$ satisfies $\varphi$ under the valuation $\theta$.
+Note that we interpret variables of sort $s$ in the set of ground terms of sort $s$.
+As all functions in $\Sigma$ (except for $+$) are of sort $\msg$, this means that variables of sort $\msg$ and $\sortnat$ are interpreted as ground terms, and $\fresh$, $\tmp$, and $\pub$ as constants.
+We do not formally define $\tsatE$ but refer to \cite{TamarinThesisInduction}.
+
+A trace formula $\varphi$ is \emph{valid} for a protocol model $(R, E)$, written $R \tsatE^\forall \varphi$, if for all traces $tr$ of $(R, E)$ and every valuation $\theta$, one has $(tr, \theta) \tsatE \varphi$.
+$\varphi$ is \emph{satisfiable} in $(R, E)$, written $R \tsatE^\exists \varphi$, if there exists a trace $tr$ of $(R, E)$ and valuation $\theta$ such that $(tr, \theta) \tsatE \varphi$.
+
+\subsection{Normal Form Dependency Graphs}
+
+Let $E$ be an equational theory, $\R$ be a rewriting system, and $AX \subseteq E$ the equations for associativity and commutativity in $E$ such that
+\begin{enumerate*}
+  \item $\R^\simeq \cup AX = E$ and
+  \item $\R$ is $AX$-convergent and $AX$-coherent.
+\end{enumerate*}
+$E$ has the \emph{finite variant property} if for all terms $t$ there is a finite set of substitutions $T = \{\tau_1, \dots, \tau_k\}$ such that for all substitutions $\sigma$ there is a substitution $\tau \in T$ and substitution $\sigma'$ so that $t\sigma \normf^\R =_{AX} (t\tau \normf^\R) \sigma'$ and for all variables $x$ occurring in $t$, we have $x\sigma \normf^\R =_{AX} x\tau\sigma'$.
+The set $\variants{t}^\R := \{ (t\tau_i\normf^\R, \tau_i) \mid 1 \leq i \leq k \}$ is a \emph{complete set of $\R,AX$-variants of $t$}.
+We extend the notion of complete variants to multiset rewriting rules and multiset rewriting systems straightforward.
+Intuitively, the variants of a term or rule allow us to reason modulo $E$ by reasoning modulo normal forms and $AX$ only.
+
+\begin{theorem}[Changing the Equational Theory {\cite[p.114]{TamarinThesisInduction}}] \label{thm:reasoning-mod-ax}
+  For every guarded trace property $\varphi$ and protocol model $(R, E)$ where $\R^\simeq \cup AX = E$:
+  $$R \tsatE^\forall \varphi \iff \{ \trace(dg) \mid dg \in dgraphs_{AX}(\variants{R}^\R), dg~\text{is}~\normf^\R\text{-normal} \} \tsat{AX}^\forall \varphi.$$
+\end{theorem}
