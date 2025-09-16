@@ -176,7 +176,7 @@ Again, we extend this notion to multiset rewriting rules and sets of multiset re
   It is clear that $NDG_{\neg\bot} \subseteq NDG$.
   We show that $NDG \subseteq NDG_{\neg\bot}$ by contradiction.
   Presume that there is a dependency graph $dg = (I, D) \in NDG \setminus NDG_{\neg\bot}$.
-  By assumption, we know that all rule instance $ri \in I$ are $\normf^\R$-normal (as $dg$ is $\normf^\R$-normal).
+  By assumption, we know that all rule instances $ri \in I$ are $\normf^\R$-normal (as $dg$ is $\normf^\R$-normal).
   Thus, by the finite variant property, we know that for each rule instance $ri \in I$ there must be a rule variant $(r, \tau) \in \variants{R}^\R$ so that $ri =_{AX} r\sigma$ for some substitution $\sigma$ (note that $r$ is $\normf^\R$-normal by definition).
   There must be some rule instance $ri$ for which its associated variant $(r, \tau)$ (as per above) is in $\variants{R}^{\R,\bot}$.
   If not, $dg$ would be in $NDG_{\neg\bot}$.
@@ -189,7 +189,7 @@ Again, we extend this notion to multiset rewriting rules and sets of multiset re
   This, however, contradicts that instances of $\RFresh$ are unique.
 \end{proof}
 
-We can use this theorem to specialize Theorem~\ref{thm:reasoning-mod-ax} into the following one.
+We can use this lemma to specialize Theorem~\ref{thm:reasoning-mod-ax} into the following one.
 
 \begin{theorem} \label{thm:reasoning-mod-fresh}
     For every guarded trace property $\varphi$ and protocol model $(R, E)$ where $\R^\simeq \cup AX$ is an equational representation for $=_E$ and $AX$ only contains equations for associativity and commutativity:
