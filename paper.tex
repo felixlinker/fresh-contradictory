@@ -172,7 +172,11 @@ Again, we extend this notion to multiset rewriting rules and sets of multiset re
 \end{lemma}
 
 \begin{proof}
-  Let $NDG := \{ dg\normf^\R \mid dg \in \dgraphs_{AX}(\variants{R}^\R) \}$ and $NDG_{\neg\bot} := \{ dg\normf^\R \mid dg \in \dgraphs_{AX}(\variants{R}^\R \setminus \variants{R}^{\R,\bot})\}$.
+  Let
+  \begin{align*}
+    NDG & := \{ dg\normf^\R \mid dg \in \dgraphs_{AX}(\variants{R}^\R) \} \\
+    NDG_{\neg\bot} & := \{ dg\normf^\R \mid dg \in \dgraphs_{AX}(\variants{R}^\R \setminus \variants{R}^{\R,\bot})\}.
+  \end{align*}
   It is clear that $NDG_{\neg\bot} \subseteq NDG$.
   We show that $NDG \subseteq NDG_{\neg\bot}$ by contradiction.
   Presume that there is a dependency graph $dg = (I, D) \in NDG \setminus NDG_{\neg\bot}$.

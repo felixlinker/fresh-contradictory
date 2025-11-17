@@ -41,10 +41,10 @@ We will use the $E$-subscript to denote operators, e.g., $\in_E$ modulo $E$.
 
 In the following, we fix the sorts in $\Sigma$ to $\msg$, $\fresh$, $\pub$, and $\sortnat$.
 $\fresh$, $\pub$, and $\sortnat$ are subsorts of $\msg$.
-In particular, sort $\fresh$ models fresh, unguessable values such as cryptographic random numbers.
+The sort $\fresh$ models fresh, unguessable values such as cryptographic random numbers.
 We sometimes prefix variables with a sort-specific symbol.
 Variables in $\fresh$ are prefixed with $\fr$, variables in $\pub$ with $\$$, and variables in $\sortnat$ with $\%$.
-When not explicitly mentioned and not clear from context, a variable without prefix or sort annotation is of sort $\msg$.
+When not explicitly mentioned or clear from context, a variable without prefix or sort annotation is of sort $\msg$.
 
 \subsubsection{Term Rewriting}
 
@@ -80,7 +80,7 @@ We write $t\normf^\R$ to denote $t$'s normal form with respect to $\to_{\R,AX}$.
 $\R$ is $AX$-coherent when for all terms $t_1$, $t_2$, and $t_3$, if $t_1 \to_{\R,AX}^* t_2$ and $t_1 =_{AX} t_3$ then there exist terms $t_4$, $t_5$ such that $t_4 =_{AX} t_5$ and $t_2 \to^*_{\R,AX} t_4$ and $t_3 \to_{\R,AX}^+ t_5$.
 We write $\R^\simeq := \{ l \simeq r \mid l \to r \in \R \}$ for a rewriting system $\R$'s associated equational theory.
 % TODO: Simon here writes (\Sigma, \R^\simeq \cup AX) is an equational presentation of =_E, but I don't understand this really so opting for this definition. Need to check whether that's fine.
-If $\R^\simeq \cup AX = E$ and $\R$ is $AX$-convergent and $AX$-coherent, then $t =_E s$ if and only if $t\normf^\R =_{AX} s\normf^\R$.
+For $E = \R^\simeq \cup AX$, if $\R$ is $AX$-convergent and $AX$-coherent, then $t =_E s$ if and only if $t\normf^\R =_{AX} s\normf^\R$.
 
 \subsubsection{Multiset Rewriting Rules}
 
@@ -202,7 +202,7 @@ $\varphi$ is \emph{satisfiable} in $(R, E)$, written $R \tsatE^\exists \varphi$,
 
 Let $E$ be an equational theory, $\R$ be a rewriting system, and $AX \subseteq E$ the equations for associativity and commutativity in $E$ such that
 \begin{enumerate*}
-  \item $\R^\simeq \cup AX = E$ and
+  \item $E = \R^\simeq \cup AX$ and
   \item $\R$ is $AX$-convergent and $AX$-coherent.
 \end{enumerate*}
 $E$ has the \emph{finite variant property} if for all terms $t$ there is a finite set of substitutions $T = \{\tau_1, \dots, \tau_k\}$ such that for all substitutions $\sigma$ there is a substitution $\tau \in T$ and substitution $\sigma'$ so that $t\sigma \normf^\R =_{AX} (t\tau \normf^\R) \sigma'$ and for all variables $x$ occurring in $t$, we have $x\sigma \normf^\R =_{AX} x\tau\sigma'$.
