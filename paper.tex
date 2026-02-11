@@ -16,6 +16,7 @@
 % }
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{subcaption}
 
 \lstset{basicstyle=\normalfont\ttfamily\small}
 
@@ -205,6 +206,11 @@ We can use this lemma to specialize Theorem~\ref{thm:reasoning-mod-ax} into the 
 \end{proof}
 
 Theorem~\ref{thm:reasoning-mod-fresh} allows us to prune all fresh-contradictory variants during Tamarin's precomputations.
+
+\section{Evaluation}
+\label{sec:eval}
+
+\input{eval.tex}
 
 \printbibliography
 

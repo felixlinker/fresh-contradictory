@@ -1,0 +1,36 @@
+We evaluated the performance change of our optimization on 19 authenticated key exchange examples that use Diffie-Hellman and bilinear pairings.
+These examples were taken from the Tamarin prover repository \cite{TamarinRepoVariantRestrictions}.
+We timed both precomputations and proof construction (which includes precomputations) with and without our optimization, taking the average over 6 runs on a laptop with an Apple M2 Max CPU and 32 GB of RAM.
+
+Figure~\ref{fig:benchmarks} shows the result of the benchmarks as box-and-whisker diagram.
+Generally, the optimization does improve performance, though not always.
+As for the precomputations, the negative outlier is a theory that does not benefit from the optimization, but that also has many rule variants due to its equational theory.
+We conjecture that checking for fresh-contradictory rule variants takes extra time but does not benefit the more complex precomputations following later.
+As for proof times, we observed that Tamarin's heuristics prioritize solving equations with many and with few equations differently.
+For some theories, we encountered performance degradation because Tamarin started solving equations with multiple solutions, although this did not aid the overall proof.
+
+\begin{figure}
+  \begin{subfigure}{.23\columnwidth}
+    \includegraphics[width=\columnwidth]{figs/precomp-abs.pdf}
+    \caption{Absolute timing of precomputations.}
+  \end{subfigure}
+  \hspace{.01\columnwidth}
+  \begin{subfigure}{.23\columnwidth}
+    \includegraphics[width=\columnwidth]{figs/precomp-rel.pdf}
+    \caption{Relative timing of precomputations.}
+  \end{subfigure}
+  \hspace{.01\columnwidth}
+  \begin{subfigure}{.23\columnwidth}
+    \includegraphics[width=\columnwidth]{figs/prove-abs.pdf}
+    \caption{Absolute timing of proof construction.}
+  \end{subfigure}
+  \hspace{.01\columnwidth}
+  \begin{subfigure}{.23\columnwidth}
+    \includegraphics[width=\columnwidth]{figs/prove-rel.pdf}
+    \caption{Relative timing of proof construction.}
+  \end{subfigure}
+  \caption{Benchmarks of the optimization.
+  Each diagram displays the absolute or relative time difference when enabling the optimization.
+  Higher is better.}
+  \label{fig:benchmarks}
+\end{figure}
