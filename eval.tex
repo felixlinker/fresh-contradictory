@@ -2,11 +2,11 @@ We evaluated the performance change of our optimization on 19 authenticated key 
 These examples were taken from the Tamarin prover repository \cite{TamarinRepoVariantRestrictions}.
 We timed both precomputations and proof construction (which includes precomputations) with and without our optimization, taking the average over 6 runs on a laptop with an Apple M2 Max CPU and 32 GB of RAM.
 
-Figure~\ref{fig:benchmarks} shows the result of the benchmarks as box-and-whisker diagram.
+Figure~\ref{fig:benchmarks} shows the benchmark results as a box-and-whisker diagram.
 Generally, the optimization does improve performance, though not always.
 As for the precomputations, the negative outlier is a theory that does not benefit from the optimization, but that also has many rule variants due to its equational theory.
-We conjecture that checking for fresh-contradictory rule variants takes extra time but does not benefit the more complex precomputations following later.
-As for proof times, we observed that Tamarin's heuristics prioritize solving equations with many and with few equations differently.
+We conjecture that checking for fresh-contradictory rule variants takes extra time but does not benefit the more complex precomputations that follow.
+As for proof times, we observed that Tamarin's heuristics prioritize equations with many and few cases differently.
 For some theories, we encountered performance degradation because Tamarin started solving equations with multiple solutions, although this did not aid the overall proof.
 
 \begin{figure}
