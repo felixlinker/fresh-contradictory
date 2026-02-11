@@ -180,7 +180,7 @@ We evaluate our optimization's performance in Section~\ref{sec:eval}.
 \label{sec:theory}
 
 Our optimization applies to theories that use operators which can cancel out and thus have multiple variants attached to them.
-Consider, for example, the following protocol rule using Diffie--Hellman exponentiation:
+Consider, for example, the following protocol rule using Diffie-Hellman exponentiation:
 $$[  \Fr(\ofsort{x}{\fresh}), \In(m) ] \rightarrow [ \Out(m^x) ].$$
 
 During precomputation, Tamarin will consider that exponentiation might cancel out, leading to the rule variant ($\circ^{-1}$ denotes an element's inverse):
