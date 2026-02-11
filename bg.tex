@@ -119,7 +119,7 @@ A set of multiset rewriting rules $P$ is a \emph{multiset rewriting system} if
 Tamarin uses a number of built-in rules to model the generation of random values and the adversary deduction following the model's equational theory $E$, the latter of which we refer to by $ND$ (normal form message deduction rules).
 The following rules model generating fresh values: $$\RFresh := [] \rightarrow [ \Fr(\ofsort{x}{\fresh}) ].$$
 Notably, the following rule is in $ND$:
-$$[ \fact{Fr}(\ofsort{x}{\fresh}) ] \lrule{\Kup(\ofsort{x}{\fresh})} [ \Kup(\ofsort{x}{\fresh}) ].$$
+$$[ \Fr(\ofsort{x}{\fresh}) ] \lrule{\Kup(\ofsort{x}{\fresh})} [ \Kup(\ofsort{x}{\fresh}) ].$$
 
 \subsection{Semantics}
 \label{subsec:semantics}

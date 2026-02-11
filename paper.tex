@@ -138,7 +138,7 @@
 
 \section{Introduction}
 
-Tamarin \cite{CAVtamarin,CSFtamarin} is a model checker for security protocol verification, which incorporates a constraint solving algorithm based on symbolic backwards search.
+The Tamarin prover \cite{CAVtamarin,CSFtamarin} is a model checker for security protocol verification, which incorporates a constraint solving algorithm based on symbolic backwards search.
 It was originally introduced in two doctoral theses \cite{TamarinThesisInduction,TamarinThesisConstraintSolving}.
 Tamarin operates in the so-called \emph{symbolic model} were cryptographic messages are represented by terms, and cryptographic operations by equations on these terms.
 The set of equations of a Tamarin theory are the theory's equational theory, and all reasoning happens modulo this equational theory.
@@ -153,11 +153,36 @@ These variants of terms are computed in a pre-computation phase.
 In this paper, we introduce a pruning mechanism for variants that significantly reduces Tamarin's search space and prove this mechanism's soundness.
 We experienced significant performance improvements when using this pruning mechanism, in particular when modelling protocols that use Diffie-Hellman group operators.
 
+The purpose of this paper is to document this optimization, in particular, its soundness proof for the maintenance of the Tamarin prover.
+
+\paragraph{Structure}
+
+We proceed as follows.
+We introduce relevant background in Section~\ref{sec:bg}.
+Then, in Section~\ref{sec:theory}, we introduce our optimization and prove its soundness by relating it to a soundness proof in one of the original theses describing Tamarin.
+
 \section{Background}
+\label{sec:bg}
 
 \input{bg.tex}
 
 \section{Rule Variant Restrictions}
+\label{sec:theory}
+
+Our optimization applies to theories that use operators which can cancel out and thus have multiple variants attached to them.
+Consider, for example, the following protocol rule using Diffie--Hellman exponentiation:
+$$[  \Fr(\ofsort{x}{\fresh}), \In(m) ] \rightarrow [ \Out(m^x) ].$$
+
+During precomputation, Tamarin will consider that exponentiation might cancel out, leading to the rule variant ($\circ^{-1}$ denotes an element's inverse):
+$$[ \Fr(\ofsort{x}{\fresh}), \In(z^{\ofsort{x}{\fresh}^{-1}}) ] \rightarrow [ \Out(z) ].$$
+
+It makes sense that Tamarin considers this variant during precomputation as it considers this rule in isolation.
+However, when one additionally considers the semantics of Tamarin protocol models, one can see that this rule variant could never occur in a normal form dependency graph.
+This is because the value that is used in the exponentiation, $\ofsort{x}{\fresh}$, is freshly introduced in this rule, but also required in the term $m$ received over the insecure network.
+To construct this term, the sender must have had access to $\ofsort{x}{\fresh}$ before it was introduced, which is impossible.
+
+In this section, we formalize the above intuition, and introduce \emph{fresh-contradictory variants}, that is, variants which need to use a fresh value before it was introduced.
+We show that one need not consider such variants during proof search as the set of traces (normal form dependency graphs) admitted by a protocol model does not change when removing fresh-contradictory rule variants.
 
 \begin{definition} \label{def:fresh-contradictory}
   Let $r = [ p_1, \dots, p_n] \lrule{\dots} [\dots]$ be a protocol rule and $\variants{r}^\R = \{(r_i, \tau_i)\}_{m \in \nat}$ a set of associated variants for a rewriting system $\R$ and associate and commutative equations $AX$.
