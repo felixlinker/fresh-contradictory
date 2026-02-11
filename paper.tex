@@ -154,12 +154,16 @@ In this paper, we introduce a pruning mechanism for variants that significantly 
 We experienced significant performance improvements when using this pruning mechanism, in particular when modelling protocols that use Diffie-Hellman group operators.
 
 The purpose of this paper is to document this optimization, in particular, its soundness proof for the maintenance of the Tamarin prover.
+As of publishing, our optimizations have already been integrated into Tamarin's code base.\footnote{%
+  See \url{https://github.com/tamarin-prover/tamarin-prover/pull/763}.
+}
 
 \paragraph{Structure}
 
 We proceed as follows.
 We introduce relevant background in Section~\ref{sec:bg}.
 Then, in Section~\ref{sec:theory}, we introduce our optimization and prove its soundness by relating it to a soundness proof in one of the original theses describing Tamarin.
+We evaluate our optimization's performance in Section~\ref{sec:eval}.
 
 \section{Background}
 \label{sec:bg}
