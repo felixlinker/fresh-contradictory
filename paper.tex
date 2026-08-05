@@ -1,6 +1,8 @@
-\PassOptionsToPackage{svgnames}{xcolor}
-\documentclass[nonacm,natbib=false]{acmart}
+\documentclass[runningheads]{llncs}
 
+\usepackage[T1]{fontenc}
+\usepackage[svgnames]{xcolor}
+\usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage[inline]{enumitem}
 \usepackage{listings}
@@ -93,7 +95,7 @@
 
 \newcommand{\sols}{\mathit{sols}}    % solutions
 \newcommand{\factsig}{\ensuremath{\Sigma_\mathit{Fact}}}
-\newcommand{\ts}{\ensuremath{\mathcal{T}}}
+\newcommand{\terms}{\ensuremath{\mathcal{T}}}
 
 \newcommand{\dom}{\mathrm{dom}}
 \newcommand{\map}{\rightharpoonup}
@@ -111,28 +113,16 @@
 \newcommand{\tsatE}{\tsat{E}}
 \newcommand{\tr}{\mathit{tr}}
 
-\newtheorem{definition}{Definition}
-\newtheorem{lem}{Lemma}
-\newtheorem*{lem*}{Lemma}
-\newtheorem{thm}{Theorem}
-\newtheorem*{thm*}{Theorem}
-\newtheorem{cor}{Corollary}
-\newtheorem{prop}{Proposition}
-\newtheorem*{prop*}{Proposition}
-\newtheorem{remark}{Remark}
-\newtheorem{example}{Example}
-
 \begin{document}
 \pagestyle{plain}
 
 \title{Rule Variant Restrictions for the Tamarin Prover}
 
-\author{Felix Linker}
-\affiliation{%
-  \institution{Department of Computer Science, ETH Zurich}
-  \city{Zürich}
-  \country{Switzerland}}
-\email{flinker@inf.ethz.ch}
+\author{Felix Linker\orcidID{0009-0000-7886-4480}}
+\institute{Department of Computer Science, ETH Zurich, Zürich, Switzerland
+\email{flinker@inf.ethz.ch}}
+
+\maketitle
 
 \begin{abstract}
   We introduce an optimization to the Tamarin prover that reduces its search space.
@@ -140,7 +130,6 @@
   We prove the optimization's soundness and evaluate its performance.
 \end{abstract}
 
-\maketitle
 
 \section{Introduction}
 
