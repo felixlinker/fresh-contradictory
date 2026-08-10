@@ -172,7 +172,7 @@ Our optimization was motivated by rules such as the following:
 $$[  \Fr(\ofsort{x}{\fresh}), \In(m) ] \rightarrow [ \Out(m^x) ].$$
 
 In the above rule, a protocol participant receives some message $m$ over the network, raises it to the power of a fresh, unguessable value $x$, and sends the result over the network.
-During pre-computation, Tamarin will consider the case in which raising $m$ to $x$ might cancel out, which it represents with the rule variant:
+During precomputation, Tamarin will consider the case in which raising $m$ to $x$ might cancel out, which it represents with the rule variant:
 $$[ \Fr(\ofsort{x}{\fresh}), \In(z^{\ofsort{x}{\fresh}^{-1}}) ] \rightarrow [ \Out(z) ].$$
 
 Note, though, that constructing $m = z^{\ofsort{x}{\fresh}^{-1}}$ requires knowledge of $x$ to raise $z$ to $x$'s inverse.
@@ -241,7 +241,7 @@ Theorem~\ref{thm:reasoning-mod-fresh} allows us to prune all fresh-contradictory
 
 In this work, we presented an optimization to the Tamarin prover, proved its soundness, and evaluated its performance.
 During a precomputation phase, Tamarin computes rule variants.
-Our optimization identifies redundant rule variants, which we call fresh-contradictory and which can be omitted from pre-computation and thus also from proof search.
+Our optimization identifies redundant rule variants, which we call fresh-contradictory and which can be omitted from precomputation and thus also from proof search.
 
 \paragraph{Future Work}
 We identified the presented optimization during proof search, when we observed that the adversary would use fresh values before they are introduced.
