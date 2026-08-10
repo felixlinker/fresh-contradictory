@@ -1,4 +1,7 @@
-We evaluated the performance change of our optimization on 19 authenticated key exchange examples that use Diffie-Hellman and bilinear pairings.
+We integrated the optimization of discarding fresh-contradictory rule variants into Tamarin's pre-computation phase.
+The implementation was straightforward, and only required around 20 lines of code at its core.
+
+We evaluated whether the optimization improves performance on 19 authenticated key exchange examples, which all use Diffie-Hellman and bilinear pairings, i.e., equational theories with cancellative operators.
 These examples were taken from the Tamarin prover repository \cite{TamarinRepoVariantRestrictions}.
 We timed both precomputations and proof construction (which includes precomputations) with and without our optimization, taking the average over 6 runs on a laptop with an Apple M2 Max CPU and 32 GB of RAM.
 
@@ -10,24 +13,24 @@ As for proof times, we observed that Tamarin's heuristics prioritize equations w
 For some theories, we encountered performance degradation because Tamarin started solving equations with multiple solutions, although this did not aid the overall proof.
 
 \begin{figure}
-  \begin{subfigure}{.23\columnwidth}
-    \includegraphics[width=\columnwidth]{figs/precomp-abs.pdf}
-    \caption{Absolute timing of precomputations.}
+  \begin{subfigure}[T]{.245\columnwidth}
+    \includegraphics[width=.95\columnwidth]{figs/precomp-abs.pdf}
+    \caption{Absolute change of pre-computations.}
   \end{subfigure}
-  \hspace{.01\columnwidth}
-  \begin{subfigure}{.23\columnwidth}
-    \includegraphics[width=\columnwidth]{figs/precomp-rel.pdf}
-    \caption{Relative timing of precomputations.}
+  % \hspace{.01\columnwidth}
+  \begin{subfigure}[T]{.245\columnwidth}
+    \includegraphics[width=.95\columnwidth]{figs/precomp-rel.pdf}
+    \caption{Relative change of pre-computations.}
   \end{subfigure}
-  \hspace{.01\columnwidth}
-  \begin{subfigure}{.23\columnwidth}
-    \includegraphics[width=\columnwidth]{figs/prove-abs.pdf}
-    \caption{Absolute timing of proof construction.}
+  % \hspace{.01\columnwidth}
+  \begin{subfigure}[T]{.245\columnwidth}
+    \includegraphics[width=.95\columnwidth]{figs/prove-abs.pdf}
+    \caption{Absolute change of proof search.}
   \end{subfigure}
-  \hspace{.01\columnwidth}
-  \begin{subfigure}{.23\columnwidth}
-    \includegraphics[width=\columnwidth]{figs/prove-rel.pdf}
-    \caption{Relative timing of proof construction.}
+  % \hspace{.01\columnwidth}
+  \begin{subfigure}[T]{.245\columnwidth}
+    \includegraphics[width=.95\columnwidth]{figs/prove-rel.pdf}
+    \caption{Relative change of proof search.}
   \end{subfigure}
   \caption{Benchmarks of the optimization.
   Each diagram displays the absolute or relative time difference when enabling the optimization.

@@ -123,23 +123,25 @@
 
 \section{Introduction}
 
-The Tamarin prover \cite{CAVtamarin,CSFtamarin} is a model checker for security protocol verification, which incorporates a constraint solving algorithm based on symbolic backwards search.
-It was originally introduced in two doctoral theses \cite{TamarinThesisInduction,TamarinThesisConstraintSolving}.
-Tamarin operates in the so-called \emph{symbolic model} were cryptographic messages are represented by terms, and cryptographic operations by equations on these terms.
+The Tamarin prover \cite{CAVtamarin,CSFtamarin} is a state-of-the-art model checker for security protocols.
+It was originally developed in two Doctoral theses \cite{TamarinThesisInduction,TamarinThesisConstraintSolving}, under the supervision of David Basin.
+In this work, I will present an optimization to the Tamarin prover that I identified while formally verifying the SecureDrop protocol \cite{SecureDrop}.
+I worked on the SecureDrop project while I was writing my Doctoral thesis, which too was supervised by David.
+While the optimization may seem conceptually simple, I would have neither been able to identify it nor to been able to prove its soundness prior to my Doctorate.
+This work showed to me how much David had taught me during my Doctorate, which is why I would like to dedicate this work to David.
+
+Tamarin operates in the so-called \emph{symbolic model}.
+In the symbolic model, cryptographic messages are represented by terms, and cryptographic operations by equations on these terms.
 The set of equations of a Tamarin theory are the theory's equational theory, and all reasoning happens modulo this equational theory.
 Tamarin only considers equational theories with specific properties.
-These properties allow Tamarin to:
-\begin{enumerate}
-  \item represent all terms in a unique normal form, and
-  \item reason modulo the equational theory by considering finite sets of \emph{variants} of terms.
-\end{enumerate}
+These properties allow Tamarin to compute a term's associated, finite set of \emph{variants}, which represent all potential shapes the term might take.
+Unifying two terms modulo a full equational theory, including associativity and commutativity, can be implemented by unifying the two terms' variants modulo associativity and commutativity only, which greatly simplifies Tamarin's proof search.
 
-These variants of terms are computed in a pre-computation phase.
-In this paper, we introduce a pruning mechanism for variants that significantly reduces Tamarin's search space and prove this mechanism's soundness.
+Variants extend to more complex constructs, like protocol rules, and Tamarin computes protocol rule variants during a pre-computation phase.
+In this paper, we prove that certain rule variants correspond to protocol rule instances that could never occur in a run of a protocol and are thus contradictory.
+Our optimization thus discards such rule variants.
 We experienced significant performance improvements when using this pruning mechanism, in particular when modelling protocols that use Diffie-Hellman group operators.
-
-The purpose of this paper is to document this optimization, in particular, its soundness proof for the maintenance of the Tamarin prover.
-As of publishing, our optimizations have already been integrated into Tamarin's code base.\footnote{%
+Our optimizations have been integrated into Tamarin's code base.\footnote{%
   See \url{https://github.com/tamarin-prover/tamarin-prover/pull/763}.
 }
 
@@ -158,20 +160,28 @@ We evaluate our optimization's performance in Section~\ref{sec:eval}.
 \section{Rule Variant Restrictions}
 \label{sec:theory}
 
-Our optimization applies to theories that use operators which can cancel out and thus have multiple variants attached to them.
-Consider, for example, the following protocol rule using Diffie-Hellman exponentiation:
+Our optimization applies to theories that use operators which can cancel out and will lead to multiple, e.g., rule variants when used.
+For example, Tamarin provides built-in support for an equational theory modelling Diffie-Hellman groups.
+That theory supports the operators $(\cdot)/2$ (multiplication), $\circ^\circ/2$ (exponentiation), $\circ^{-1}/1$ (inverse), and $\epsilon/0$ (neutral element) as well as, in particular, the equations:
+\begin{gather*}
+  x \cdot x^{-1} = \epsilon \\
+  x^\epsilon = x
+\end{gather*}
+
+Our optimization was motivated by rules such as the following:
 $$[  \Fr(\ofsort{x}{\fresh}), \In(m) ] \rightarrow [ \Out(m^x) ].$$
 
-During precomputation, Tamarin will consider that exponentiation might cancel out, leading to the rule variant ($\circ^{-1}$ denotes an element's inverse):
+In the above rule, a protocol participant receives some message $m$ over the network, raises it by a fresh, unguessable value $x$, and sends the result over the network.
+During pre-computation, Tamarin will consider the case that raising $m$ by $x$ might cancel out, which it represents with the rule variant:
 $$[ \Fr(\ofsort{x}{\fresh}), \In(z^{\ofsort{x}{\fresh}^{-1}}) ] \rightarrow [ \Out(z) ].$$
 
-It makes sense that Tamarin considers this variant during precomputation as it considers this rule in isolation.
-However, when one additionally considers the semantics of Tamarin protocol models, one can see that this rule variant could never occur in a normal form dependency graph.
-This is because the value that is used in the exponentiation, $\ofsort{x}{\fresh}$, is freshly introduced in this rule, but also required in the term $m$ received over the insecure network.
-To construct this term, the sender must have had access to $\ofsort{x}{\fresh}$ before it was introduced, which is impossible.
+Note, though, that constructing $m = z^{\ofsort{x}{fresh}^{-1}}$ requires knowledge of $x$ to $z$ by its inverse.
+$x$, though, is freshly introduced in the above rule.
+Thus, $m$ requires that $x$ is used before it is introduced, which is impossible.
 
-In this section, we formalize the above intuition, and introduce \emph{fresh-contradictory variants}, that is, variants which need to use a fresh value before it was introduced.
-We show that one need not consider such variants during proof search as the set of traces (normal form dependency graphs) admitted by a protocol model does not change when removing fresh-contradictory rule variants.
+In the following, we introduce \emph{fresh-contradictory rule variants}, which formalize the above intuition.
+Fresh-contradictory rule variants use a fresh value before it was introduced.
+We show that one can remove such variants from a protocol model without changing as the model's associated set of traces (normal form dependency graphs).
 
 \begin{definition} \label{def:fresh-contradictory}
   Let $r = [ p_1, \dots, p_n] \lrule{\dots} [\dots]$ be a protocol rule and $\variants{r}^\R = \{(r_i, \tau_i)\}_{m \in \nat}$ a set of associated variants for a rewriting system $\R$ and associate and commutative equations $AX$.
@@ -221,10 +231,21 @@ We can use this lemma to specialize Theorem~\ref{thm:reasoning-mod-ax} into the 
 
 Theorem~\ref{thm:reasoning-mod-fresh} allows us to prune all fresh-contradictory variants during Tamarin's precomputations.
 
-\section{Evaluation}
+\section{Implementation and Evaluation}
 \label{sec:eval}
 
 \input{eval.tex}
+
+\section{Conclusion}
+
+In this work, we presented an optimization to the Tamarin prover, proved its soundness, and evaluated its performance.
+During a pre-computation phase, Tamarin computes rule variants.
+Our optimization identifies redundant rule variants, which we call fresh-contradictory can which be omitted from pre-computation and thus also from proof search.
+
+\paragraph{Future Work}
+We identified the presented optimization during proof search where we observed that the adversary would use fresh values before they are introduced.
+Tamarin already recognizes the use of fresh values before they are introduced as a contradiction, however, only when they occur not below a reducible function symbol such as exponentiation.
+For future work and as an alternative to our optimization, one could explore lifting or relaxing that restriction.
 
 \printbibliography
 
