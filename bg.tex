@@ -75,7 +75,7 @@ We use an $E$-subscript to denote relations modulo $E$.
 If an equational theory $E$'s equations can be oriented to a convergent rewriting system $\R$, then $t =_E s$ if and only if $t{\downarrow}_\R = s{\downarrow}_\R$ \cite{RewritingUnification,ACRewriting}.
 Some equations, e.g., commutativity, cannot be oriented, and in those cases we split an equational theory $E$ into oriented rewriting rules $\R$ and unoriented equations $AX$.
 The \emph{rewrite relation} $\to_{\R,AX}$ is defined as $s \to_{\R,AX} t$ if there is a position $p$ in $s$, a rewrite rule $l \to r \in \R$, and a substitution $\sigma$ such that $s|_p =_{AX} l\sigma$ and $t = s[r\sigma]_p$.
-We say that $\R$ is $AX$-convergent if $\to_{\R,AX}$ is terminating and confluent.
+We say that $\R$ is $AX$-convergent if $\to_{\R,AX}$ is terminating and confluent modulo $AX$.
 We write $t\normf^\R$ to denote $t$'s normal form with respect to $\to_{\R,AX}$.
 $\R$ is $AX$-coherent when for all terms $t_1$, $t_2$, and $t_3$, if $t_1 \to_{\R,AX} t_2$ and $t_1 =_{AX} t_3$, then there exist terms $t_4$ and $t_5$ such that $t_4 =_{AX} t_5$ and $t_2 \to^*_{\R,AX} t_4$ and $t_3 \to_{\R,AX}^+ t_5$.
 We write $\R^\simeq := \{ l \simeq r \mid l \to r \in \R \}$ for a rewriting system $\R$'s associated set of equations.
