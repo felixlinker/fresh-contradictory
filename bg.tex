@@ -11,7 +11,7 @@ In Section~\ref{subsec:protocol-specs}, we define Tamarin protocol models, which
 Multiset rewriting rules constitute a protocol model's state transition system and model the behavior of honest protocol participants, the adversary, and domain assumptions such as who controls which cryptographic key.
 
 In Section~\ref{subsec:semantics}, we define the semantics of Tamarin protocol models.
-In short, a protocol model's semantics are the set of traces associated with its state transition system, i.e., sequences  of multiset rewriting rule applications.
+In short, a protocol model's semantics are the set of traces associated with its state transition system, i.e., sequences of multiset rewriting rule applications.
 
 Utilizing the finite variant property, Tamarin only considers traces that are in a normal form with respect to the protocol model's equational theory, which we describe in Section~\ref{sec:ndgs}.
 For our optimization, we will require the result of Theorem~\ref{thm:reasoning-mod-ax}, which shows that reasoning about a set of protocol model rules modulo a full equational theory is equivalent to reasoning about a set of protocol model rule \emph{variants} modulo associativity and commutativity (if applicable).
@@ -34,7 +34,7 @@ A term is \emph{ground} if it contains no variables.
 A substitution is a function $\sigma: \vars \to \terms_\Sigma$ mapping variables to terms.
 We require that substitutions respect sorts, i.e., variables of sort $s$ must be mapped to terms of sort $s' \leq s$.
 We extend substitutions homomorphically to terms and other constructs (to be defined later) as usual, and write $t\sigma$ for an application of $\sigma$ to a term $t \in \terms_\Sigma$.
-A \emph{valuation} is a substitution to ground terms.
+A \emph{valuation} is a substitution mapping variables to ground terms.
 
 \subsubsection{Term Rewriting}
 
@@ -112,7 +112,7 @@ One rule $ri$ is another rule $r$'s \emph{instance} if there exists a substituti
 We write $\prems(r)$, $\acts(r)$, and $\concs(r)$ for a rule $r$'s list of premises, actions, and conclusions respectively.
 A rule or rule instance is ground if all its facts are ground.
 
-Facts are either liner or persistent (preceded by a $!$).
+Facts are either linear or persistent (preceded by a $!$).
 When a rule is applied, the linear (but not the persistent) facts in its premise are removed from the global state and replaced by the facts in its conclusion.
 
 A set of multiset rewriting rules $P$ is a \emph{multiset rewriting system} if it satisfies certain well-formedness restrictions.
@@ -132,8 +132,8 @@ Importantly, no other rule introduces an $\Fr$ fact.
   \RFresh := [] \rightarrow [ \Fr(\ofsort{x}{\fresh}) ].
 \]
 
-Other rules, referred to by $ND$ (normal-form message deduction rules), model adversary deduction according to the model's equational theory $E$.
-For this work, the following rule in $ND$ is particularly relevant, which allows the attacker to generate new fresh values :
+Other rules, referred to as $ND$ (normal-form message deduction rules), model adversary deduction according to the model's equational theory $E$.
+For this work, the following rule in $ND$, which allows the attacker to generate new fresh values, is particularly relevant:
 \begin{gather*}
   [ \Fr(\ofsort{x}{\fresh}) ] \lrule{\Kup(\ofsort{x}{\fresh})} [ \Kup(\ofsort{x}{\fresh}) ].
 \end{gather*}

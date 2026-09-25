@@ -127,7 +127,7 @@ The Tamarin prover \cite{CAVtamarin,CSFtamarin} is a state-of-the-art model chec
 It was originally developed in two doctoral theses \cite{TamarinThesisInduction,TamarinThesisConstraintSolving}, supervised by David Basin.
 In this work, I will present an optimization to the Tamarin prover that I identified while formally verifying the SecureDrop protocol \cite{SecureDrop}.
 I worked on the SecureDrop project while I was finalizing my doctoral thesis, also supervised by David.
-While the optimization may seem conceptually simple, I would not have been able to identify it nor been able to prove its soundness prior to my doctorate.
+While the optimization may seem conceptually simple, I would neither have been able to identify it nor have been able to prove its soundness prior to my doctorate.
 This work showed me how much David had taught me during my doctorate, which is why I would like to dedicate this work to him.
 
 Tamarin operates in the so-called \emph{symbolic model}, in which cryptography is modelled by an \emph{equational theory}.
@@ -136,7 +136,7 @@ Tamarin reasons modulo this equational theory but only considers equational theo
 These properties allow Tamarin to compute the finite set of \emph{variants} associated to a term, which represent all potential shapes the term might take.
 Unifying two terms modulo a full equational theory, including associativity and commutativity, can be implemented by unifying the two terms' variants modulo associativity and commutativity only, which greatly simplifies Tamarin's proof search.
 
-Also constructs that are more complex than terms, for example, protocol rules can have variants, and Tamarin computes protocol rule variants during a precomputation phase.
+Constructs that are more complex than terms, for example, protocol rules, can also have variants, and Tamarin computes protocol rule variants during a precomputation phase.
 In this paper, we prove that certain rule variants correspond to protocol rule instances that could never occur in a run of a protocol.
 Thus, any constraint system containing them can be considered contradictory and one can safely ignore such rule variants.
 We experienced significant performance improvements when using this pruning mechanism, in particular when modelling protocols that use Diffie-Hellman group operators.
@@ -257,7 +257,7 @@ Our optimization identifies redundant rule variants, which we call fresh-contrad
 We identified the presented optimization during proof search, when we observed that the adversary would use fresh values before they are introduced.
 Tamarin already recognizes the use of fresh values before they are introduced as a contradiction, but only when they do not occur below a reducible function symbol such as exponentiation.
 For future work and as an alternative to our optimization, one could explore lifting or relaxing that restriction.
-Moreover, in Section~\ref{sec:eval}, we discussed that Tamarin's heuristics not always interact favorably with our optimization.
+Moreover, in Section~\ref{sec:eval}, we discussed that Tamarin's heuristics do not always interact favorably with our optimization.
 Thus, we suggest updating Tamarin's heuristics to account for our optimization.
 
 \printbibliography

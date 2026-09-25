@@ -22,8 +22,8 @@ These improvements, however, are not as drastic as for proof search, because abs
 The negative outlier, for which precomputation time increases, is a theory that does not benefit from the optimization, but that also has many rule variants due to its equational theory.
 We conjecture that checking for fresh-contradictory rule variants takes extra time but does not benefit the more complex precomputations that follow.
 
-Overall, we regard our optimization as a net improvement to Tamarin, although, it also led to decreased performance in some cases due to unfavorable interactions with Tamarin's proof search heuristics.
-As for the formal analysis of SecureDrop protocol \cite{SecureDrop}, which initially motivated this work, we observed that proof search was only feasible when using our optimization.
+Overall, we regard our optimization as a net improvement to Tamarin, although it also led to decreased performance in some cases due to unfavorable interactions with Tamarin's proof search heuristics.
+As for the formal analysis of the SecureDrop protocol \cite{SecureDrop}, which initially motivated this work, we observed that proof search was only feasible when using our optimization.
 Without it, Tamarin would run out of memory on a machine using 252~GB of memory.
 
 \begin{figure}
@@ -48,7 +48,7 @@ Without it, Tamarin would run out of memory on a machine using 252~GB of memory.
   \end{subfigure}
   \caption{Evaluation results of the optimization as box plots.
   A box plot illustrates the median value (middle line in box), upper and lower quartiles (the boxes' upper and lower halves), maximum and minimum values (lines above and below the boxes), as well as outliers (dots).
-  Each plot displays the absolute or relative time difference when enabling the optimization where lower is better.
+  Each plot displays the absolute or relative time difference when enabling the optimization, where lower is better.
   For example, a value of -10~s means that time decreased by 10 seconds, and a value of 60\% means that the optimization reduced the time to 60\% of what it was without the optimization.
   The absolute change in the time of precomputations is so little that median, quartiles, minimum, and maximum are close to 0.00~s.
   For clarity, we omitted the data labels of that diagram.}
