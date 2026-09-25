@@ -31,7 +31,7 @@ For $s \in S$, we use $\terms_\Sigma^s$ to denote the terms of sort $s$.
 The set of all terms of an order-sorted signature is $\terms_\Sigma = \bigcup_{s \in S} \terms_\Sigma^s$.
 A term is \emph{ground} if it contains no variables.
 
-A substitution is a function $\sigma: \vars \to \terms_\Sigma$ mapping variables to terms.
+A substitution is a function $\sigma: \vars \to \terms_\Sigma$.
 We require that substitutions respect sorts, i.e., variables of sort $s$ must be mapped to terms of sort $s' \leq s$.
 We extend substitutions homomorphically to terms and other constructs (to be defined later) as usual, and write $t\sigma$ for an application of $\sigma$ to a term $t \in \terms_\Sigma$.
 A \emph{valuation} is a substitution mapping variables to ground terms.
