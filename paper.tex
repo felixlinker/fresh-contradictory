@@ -174,15 +174,15 @@ That theory supports the operators $(\cdot)/2$ (multiplication), $\circ^\circ/2$
 Our optimization was motivated by rules such as the following:
 $$[  \Fr(\ofsort{x}{\fresh}), \In(m) ] \rightarrow [ \Out(m^x) ].$$
 
-In the above rule, a protocol participant receives some message $m$ over the network, raises it to the power of a fresh, unguessable value $x$, and sends the result over the network.
+In the above rule, a protocol participant receives a message $m$ over the network, raises it to the power of a fresh, unguessable value $x$, and sends the result over the network.
 During precomputation, Tamarin will consider the case in which raising $m$ to $x$ might cancel out, which it represents with the rule variant:
-$$[ \Fr(\ofsort{x}{\fresh}), \In(z^{\ofsort{x}{\fresh}^{-1}}) ] \rightarrow [ \Out(z) ].$$
+$$[ \Fr(\ofsort{x}{\fresh}), \In(z^{(\ofsort{x}{\fresh})^{-1}}) ] \rightarrow [ \Out(z) ].$$
 
-Note, though, that constructing $m = z^{\ofsort{x}{\fresh}^{-1}}$ requires knowledge of $x$ to raise $z$ to $x$'s inverse.
-The value $x$, though, is freshly introduced in the above rule.
+Note, though, that constructing $m = z^{(\ofsort{x}{\fresh})^{-1}}$ requires knowledge of $x$ to raise $z$ to $x$'s inverse.
+The above rule, though, freshly introduced $x$.
 Thus, constructing $m$ requires $x$ to be used before it is introduced, which is impossible.
 
-In the following, we introduce \emph{fresh-contradictory rule variants}, which formalize the above intuition.
+\emph{Fresh-contradictory rule variants}, which we define below, formalize the above intuition.
 Fresh-contradictory rule variants use a fresh value before it is introduced.
 We show that one can remove such variants from a protocol model without changing the model's associated set of normal-form dependency graphs.
 
@@ -226,7 +226,7 @@ We write $\variants{r}^{\R,\bot} \subseteq \variants{r}^\R$ for the fresh-contra
   This, however, contradicts that instances of $\RFresh$ are unique.
 \end{proof}
 
-We can use this lemma to specialize Theorem~\ref{thm:reasoning-mod-ax} to obtain the following theorem.
+We can use this lemma to specialize Theorem~\ref{thm:reasoning-mod-ax} as follows.
 
 \begin{theorem} \label{thm:reasoning-mod-fresh}
     For every guarded trace property $\varphi$ and protocol model $(R, E)$ where $\R^\simeq \cup AX$ is an equational presentation of $=_E$ and $AX$ only contains equations for associativity and commutativity:

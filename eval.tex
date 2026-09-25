@@ -5,11 +5,11 @@ We evaluated whether the optimization improves performance on 19 authenticated k
 These examples were taken from the Tamarin prover repository \cite{TamarinRepoVariantRestrictions} (located at \texttt{examples/ake/}).
 We timed both precomputations and proof construction (which includes precomputations) with and without our optimization, taking the average over 6 runs on a laptop with an Apple M2 Max CPU and 32 GB of RAM.
 
-Figure~\ref{fig:benchmarks} shows the evaluation results as box plots.
+Figure~\ref{fig:benchmarks} shows the evaluation results.
 Generally, the optimization improves performance.
-As can be seen in Figure~\ref{fig:proof-rel}, for about 75\% of the theories, proof time improves.
+As illustrated in Figure~\ref{fig:proof-rel}, proof time improves for about 75\% of the theories.
 For 50\% of theories, the improvement is at least 5\%, and for 25\% of theories, there is an improvement of around 20\%-30\%.
-Observe that for large theories, which sometimes can take days to verify, such improvements can bring massive absolute time savings.
+Observe that for large theories, which can take days to verify, such improvements can bring massive time savings.
 When proof time increases, it does so by only 5\% at most.
 
 To understand why our optimization can also degrade performance, we manually investigated some theories, for which proof time increases.

@@ -83,20 +83,20 @@ For $E = \R^\simeq \cup AX$, if $\R$ is $AX$-convergent and $AX$-coherent, then 
 
 \subsubsection{Multisets}
 
-A \emph{multiset} $\{a, b, \dots\}^\sharp$ is a set of items $a$, $b$, etc., where each item can occur multiple times.
+A \emph{multiset} $\{a, b, \dots\}^\sharp$ is a set of items $a$, $b$, etc., and items can repeat.
 We extend the usual operations and constants for sets to multisets using the $\sharp$ superscript, e.g., $\emptyset^\sharp$ is the empty multiset.
 Whenever we use relations, e.g., $\subseteq^\sharp$, or functions, e.g., $\cup^\sharp$, on multisets, they take cardinality into account.
 
 \subsection{Protocol Specifications}
 \label{subsec:protocol-specs}
 
-In Tamarin, state transitions are modeled using multiset rewriting rules.
+A Tamarin model is a state transition system, defined by multiset rewriting rules.
 The global state consists of a multiset of ground facts, and the rewriting rules define how the state is updated.
 Facts are similar to predicates in first-order logic and are of the form $F(t_1, \dots, t_n)$.
 $F$ is a fact symbol from a fact signature $\factsig$, and $t_1, \dots, t_n$ are terms defined over the model's signature $\Sigma$.
 We fix the sorts in $\Sigma$ to $\msg$, $\fresh$, $\pub$, and $\sortnat$.
 The sorts $\fresh$, $\pub$, and $\sortnat$ are subsorts of $\msg$.
-The sort $\fresh$ models fresh, unguessable values such as cryptographic random numbers.
+The sort $\fresh$ models fresh, unguessable values such as random numbers.
 
 A fact is ground if all its terms are ground.
 Facts typically model the local state of participants or the network, e.g., who possesses which keys, or what messages have been sent over the network.
@@ -112,9 +112,8 @@ One rule $ri$ is another rule $r$'s \emph{instance} if there exists a substituti
 We write $\prems(r)$, $\acts(r)$, and $\concs(r)$ for a rule $r$'s list of premises, actions, and conclusions respectively.
 A rule or rule instance is ground if all its facts are ground.
 
-Facts are either persistent (preceded by a $!$) or linear.
-When a rule is applied, the linear facts in its premise are removed from the global state and replaced by the facts in its conclusion.
-Persistent facts are not consumed when used in a rule's premise.
+Facts are either liner or persistent (preceded by a $!$).
+When a rule is applied, the linear (but not the persistent) facts in its premise are removed from the global state and replaced by the facts in its conclusion.
 
 A set of multiset rewriting rules $P$ is a \emph{multiset rewriting system} if it satisfies certain well-formedness restrictions.
 We introduce three restrictions here, but omit others that are irrelevant to our work:
@@ -151,7 +150,7 @@ The initial state is the empty multiset $\emptyset^\sharp$.
 A state transition is the application of a ground rule instance $ri = l \lrule{a} r$.
 We use $\lfacts(x)$ and $\pfacts(x)$ to denote the linear and persistent facts in $x$, respectively.
 A rule instance $ri$ can be applied if its premises are contained in the global state, which is then updated accordingly.
-Formally, the state transition relation $\Rightarrow_{(R, E)}$ is defined as:
+Formally, the state transition relation $\Rightarrow_{(R, E)}$ is:
 \begin{align*}
   S \Rightarrow_{(R, E)} (S \setminus^\sharp \lfacts(l)) \cup^\sharp r && \text{if}~\lfacts(l) \subseteq^\sharp S, \pfacts(l) \subseteq \setof(S)
 \end{align*}
