@@ -240,7 +240,7 @@ We can use this lemma to specialize Theorem~\ref{thm:reasoning-mod-ax} to obtain
   This follows directly from Theorem~\ref{thm:reasoning-mod-ax} and Lemma~\ref{lem:ndg-eq}.
 \end{proof}
 
-Theorem~\ref{thm:reasoning-mod-fresh} allows us to prune all fresh-contradictory variants during Tamarin's precomputations.
+Theorem~\ref{thm:reasoning-mod-fresh} allows us to prune fresh-contradictory variants during Tamarin's precomputations.
 
 \section{Implementation and Evaluation}
 \label{sec:eval}
@@ -257,6 +257,8 @@ Our optimization identifies redundant rule variants, which we call fresh-contrad
 We identified the presented optimization during proof search, when we observed that the adversary would use fresh values before they are introduced.
 Tamarin already recognizes the use of fresh values before they are introduced as a contradiction, but only when they do not occur below a reducible function symbol such as exponentiation.
 For future work and as an alternative to our optimization, one could explore lifting or relaxing that restriction.
+Moreover, in Section~\ref{sec:eval}, we discussed that Tamarin's heuristics not always interact favorably with our optimization.
+Thus, we suggest updating Tamarin's heuristics to account for our optimization.
 
 \printbibliography
 
