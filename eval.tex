@@ -2,38 +2,55 @@ We integrated the optimization of discarding fresh-contradictory rule variants i
 The implementation was straightforward and only required around 20 lines of code at its core.
 
 We evaluated whether the optimization improves performance on 19 authenticated key exchange examples, all of which use equational theories with cancellative operators to model Diffie--Hellman exponentiation and bilinear pairings.
-These examples were taken from the Tamarin prover repository \cite{TamarinRepoVariantRestrictions}.
+These examples were taken from the Tamarin prover repository \cite{TamarinRepoVariantRestrictions} (located at \texttt{examples/ake/}).
 We timed both precomputations and proof construction (which includes precomputations) with and without our optimization, taking the average over 6 runs on a laptop with an Apple M2 Max CPU and 32 GB of RAM.
 
-Figure~\ref{fig:benchmarks} shows the benchmark results as box-and-whisker diagrams.
-Generally, the optimization does improve performance, though not always.
-As for the precomputations, the negative outlier is a theory that does not benefit from the optimization, but that also has many rule variants due to its equational theory.
+Figure~\ref{fig:benchmarks} shows the evaluation results as box plots.
+Generally, the optimization improves performance.
+As can be seen in Figure~\ref{fig:proof-rel}, for about 75\% of the theories, proof time improves.
+For 50\% of theories, the improvement is at least 5\%, and for 25\% of theories, there is an improvement of around 20\%-30\%.
+Observe that for large theories, which sometimes can take days to verify, such improvements can bring massive absolute time savings.
+When proof time increases, it does so by only 5\% at most.
+
+To understand why our optimization can also degrade performance, we manually investigated some theories, for which proof time increases.
+With our optimization, we observed that Tamarin solves some equations earlier than before, although solving these equations does not aid the overall proof.
+This is because Tamarin's heuristics prioritize solving equations with many and few cases differently, and our optimization reduces an equation's cases, leading it to being prioritized differently.
+We thus attribute worsened performance to unfavorable interactions between our optimization and existing Tamarin heuristics.
+
+As for precomputation time, Figure~\ref{fig:precomp-rel} shows that time improves for all but one theory.
+These improvements, however, are not as drastic as for proof search, because absolute changes, displayed in Figure~\ref{fig:precomp-abs}, are mostly negligible, except for some outliers.
+The negative outlier, for which precomputation time increases, is a theory that does not benefit from the optimization, but that also has many rule variants due to its equational theory.
 We conjecture that checking for fresh-contradictory rule variants takes extra time but does not benefit the more complex precomputations that follow.
-As for proof times, we observed that Tamarin's heuristics prioritize equations with many and few cases differently.
-For some theories, we encountered performance degradation because Tamarin started solving equations with multiple solutions, although this did not aid the overall proof.
+
+Overall, we regard our optimization as a net improvement to Tamarin, although, it also led to decreased performance in some cases due to unfavorable interactions with Tamarin's proof search heuristics.
+As for the formal analysis of SecureDrop protocol \cite{SecureDrop}, which initially motivated this work, we observed that proof search was only feasible when using our optimization.
+Without it, Tamarin would run out of memory on a machine using 252~GB of memory.
 
 \begin{figure}
-  \begin{subfigure}[T]{.245\columnwidth}
-    \includegraphics[width=.95\columnwidth]{figs/precomp-abs.pdf}
-    \caption{Absolute precomputation change.}
+  \begin{subfigure}[T]{.24\columnwidth}
+    \includegraphics[width=\columnwidth]{figs/precomp-abs.pdf}
+    \caption{Absolute change of precomputations.}
+    \label{fig:precomp-abs}
   \end{subfigure}
-  % \hspace{.01\columnwidth}
-  \begin{subfigure}[T]{.245\columnwidth}
-    \includegraphics[width=.95\columnwidth]{figs/precomp-rel.pdf}
-    \caption{Relative precomputation change.}
+  \begin{subfigure}[T]{.24\columnwidth}
+    \includegraphics[width=\columnwidth]{figs/precomp-rel.pdf}
+    \caption{Relative change of precomputations.}
+    \label{fig:precomp-rel}
   \end{subfigure}
-  % \hspace{.01\columnwidth}
-  \begin{subfigure}[T]{.245\columnwidth}
-    \includegraphics[width=.95\columnwidth]{figs/prove-abs.pdf}
-    \caption{Absolute proof-search change.}
+  \begin{subfigure}[T]{.24\columnwidth}
+    \includegraphics[width=\columnwidth]{figs/prove-abs.pdf}
+    \caption{Absolute change of proof search.}
   \end{subfigure}
-  % \hspace{.01\columnwidth}
-  \begin{subfigure}[T]{.245\columnwidth}
-    \includegraphics[width=.95\columnwidth]{figs/prove-rel.pdf}
-    \caption{Relative proof-search change.}
+  \begin{subfigure}[T]{.24\columnwidth}
+    \includegraphics[width=\columnwidth]{figs/prove-rel.pdf}
+    \caption{Relative change of proof search.}
+    \label{fig:proof-rel}
   \end{subfigure}
-  \caption{Benchmarks of the optimization.
-  Each diagram displays the absolute or relative time difference when enabling the optimization.
-  Higher is better.}
+  \caption{Evaluation results of the optimization as box plots.
+  A box plot illustrates the median value (middle line in box), upper and lower quartiles (the boxes' upper and lower halves), maximum and minimum values (lines above and below the boxes), as well as outliers (dots).
+  Each plot displays the absolute or relative time difference when enabling the optimization where lower is better.
+  For example, a value of -10~s means that time decreased by 10 seconds, and a value of 60\% means that the optimization reduced the time to 60\% of what it was without the optimization.
+  The absolute change in the time of precomputations is so little that median, quartiles, minimum, and maximum are close to 0.00~s.
+  For clarity, we omitted the data labels of that diagram.}
   \label{fig:benchmarks}
 \end{figure}

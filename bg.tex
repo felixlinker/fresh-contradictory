@@ -1,6 +1,5 @@
-In this paper, we introduce the Tamarin prover following \cite{TamarinThesisInduction}.
-We omit certain details for clarity.
-For full details, we refer the reader to \cite{TamarinThesisInduction}.
+We introduce the Tamarin prover following \cite{TamarinThesisInduction}.
+We omit certain details for clarity, and refer to \cite{TamarinThesisInduction} for full details.
 In Section~\ref{sec:preliminaries}, we introduce preliminaries that are independent of Tamarin itself: order-sorted term algebras, term rewriting, equational theories, and multisets.
 In Sections~\ref{subsec:protocol-specs}, \ref{subsec:semantics}, and~\ref{sec:ndgs}, we introduce Tamarin itself.
 We start with Tamarin's syntax, then introduce Tamarin's semantics, and finally explain how variants determine Tamarin's reasoning.
@@ -68,14 +67,14 @@ We often leave $\Sigma$ implicit and identify $\Xi$ by $E$.
 Two terms $s$ and $t$ are \emph{equal modulo $E$} if $t =_E s$.
 We use an $E$-subscript to denote relations modulo $E$.
 
-If an equational theory $E$'s equations can be oriented to a convergent rewriting system $\R$, then $t =_E s$ if and only if $t{\downarrow}_\R = s{\downarrow}_\R$.
+If an equational theory $E$'s equations can be oriented to a convergent rewriting system $\R$, then $t =_E s$ if and only if $t{\downarrow}_\R = s{\downarrow}_\R$ \cite{RewritingUnification,ACRewriting}.
 Some equations, e.g., commutativity, cannot be oriented, and in those cases we split an equational theory $E$ into oriented rewriting rules $\R$ and unoriented equations $AX$.
 The \emph{rewrite relation} $\to_{\R,AX}$ is defined as $s \to_{\R,AX} t$ if there is a position $p$ in $s$, a rewrite rule $l \to r \in \R$, and a substitution $\sigma$ such that $s|_p =_{AX} l\sigma$ and $t = s[r\sigma]_p$.
 We say that $\R$ is $AX$-convergent if $\to_{\R,AX}$ is terminating and confluent.
 We write $t\normf^\R$ to denote $t$'s normal form with respect to $\to_{\R,AX}$.
-$\R$ is $AX$-coherent when for all terms $t_1$, $t_2$, and $t_3$, if $t_1 \to_{\R,AX}^* t_2$ and $t_1 =_{AX} t_3$, then there exist terms $t_4$ and $t_5$ such that $t_4 =_{AX} t_5$ and $t_2 \to^*_{\R,AX} t_4$ and $t_3 \to_{\R,AX}^+ t_5$.
+$\R$ is $AX$-coherent when for all terms $t_1$, $t_2$, and $t_3$, if $t_1 \to_{\R,AX} t_2$ and $t_1 =_{AX} t_3$, then there exist terms $t_4$ and $t_5$ such that $t_4 =_{AX} t_5$ and $t_2 \to^*_{\R,AX} t_4$ and $t_3 \to_{\R,AX}^+ t_5$.
 We write $\R^\simeq := \{ l \simeq r \mid l \to r \in \R \}$ for a rewriting system $\R$'s associated set of equations.
-For $E = \R^\simeq \cup AX$, if $\R$ is $AX$-convergent and $AX$-coherent, then $t =_E s$ if and only if $t\normf^\R =_{AX} s\normf^\R$.
+For $E = \R^\simeq \cup AX$, if $\R$ is $AX$-convergent and $AX$-coherent, then $t =_E s$ if and only if $t\normf^\R =_{AX} s\normf^\R$ \cite{RewritingUnification,ACRewriting}.
 
 \subsubsection{Multisets}
 
@@ -91,18 +90,18 @@ The global state consists of a multiset of ground facts, and the rewriting rules
 Facts are similar to predicates in first-order logic and are of the form $F(t_1, \dots, t_n)$.
 $F$ is a fact symbol from a fact signature $\factsig$, and $t_1, \dots, t_n$ are terms defined over the model's signature $\Sigma$.
 We fix the sorts in $\Sigma$ to $\msg$, $\fresh$, $\pub$, and $\sortnat$.
-$\fresh$, $\pub$, and $\sortnat$ are subsorts of $\msg$.
+The sorts $\fresh$, $\pub$, and $\sortnat$ are subsorts of $\msg$.
 The sort $\fresh$ models fresh, unguessable values such as cryptographic random numbers.
 
 A fact is ground if all its terms are ground.
 Facts typically model the local state of participants or the network, e.g., who possesses which keys, or what messages have been sent over the network.
 We consider the special, reserved fact symbols $\Fr$, $\In$, $\Out$, $\Kup$, and $\Kdown$ of arity 1 in $\factsig$.
-These symbols respectively model generating a fresh, unguessable value, receiving and sending a message over an insecure network, and adversary knowledge.
+The symbol $\Fr$ models generating a fresh, unguessable value, $\In$ and $\Out$ model receiving and sending a message over an insecure network, and $\Kup$ and $\Kdown$ model adversary knowledge.
 
 Multiset rewriting rules in Tamarin have the form $$[l_1, \dots, l_m] \lrule{a_1, \dots, a_n} [r_1, \dots, r_o].$$
 $l_i$, $a_j$, and $r_k$ are facts and may contain variables ($1 \leq i \leq m$, $1 \leq j \leq n$, $1 \leq k \leq o$).
 $l_1, \dots, l_m$ are the rule's \emph{premises}, $a_1, \dots, a_n$ are the rule's \emph{actions} (also called \emph{action facts}), and $r_1, \dots, r_o$ are the rule's \emph{conclusions}.
-$[a_1, \dots, a_n]$ can be omitted when a rule has no actions.
+We write $\rightarrow$ instead of $\lrule{}$ when a rule has no actions.
 Rules can be instantiated by a substitution $\sigma$.
 One rule $ri$ is another rule $r$'s \emph{instance} if there exists a substitution $\sigma$ such that $r\sigma = ri$.
 We write $\prems(r)$, $\acts(r)$, and $\concs(r)$ for a rule $r$'s list of premises, actions, and conclusions respectively.
@@ -117,7 +116,7 @@ We introduce three restrictions here, but omit others that are irrelevant to our
 \begin{enumerate}[label=(\roman*)]
   \item no rule uses a fresh constant,
   \item no rule's conclusion contains an $\Fr$ fact, and
-  \item all $\fresh$ and $\msg$ variables used in a rule's conclusion are introduced in a rule's premise.
+  \item all $\fresh$ and $\msg$ variables used in a rule's conclusion are introduced in the rule's premise.
 \end{enumerate}
 
 \paragraph{Built-In Rules}
@@ -130,7 +129,7 @@ Importantly, no other rule introduces an $\Fr$ fact.
 \]
 
 Other rules, referred to by $ND$ (normal-form message deduction rules), model adversary deduction according to the model's equational theory $E$.
-For this work, the following rule in $ND$ is particularly relevant:
+For this work, the following rule in $ND$ is particularly relevant, which allows the attacker to generate new fresh values :
 \begin{gather*}
   [ \Fr(\ofsort{x}{\fresh}) ] \lrule{\Kup(\ofsort{x}{\fresh})} [ \Kup(\ofsort{x}{\fresh}) ].
 \end{gather*}
@@ -145,11 +144,11 @@ Given a multiset rewriting system $P$, adversary deduction rules $ND$, an equati
 Tamarin models induce a labeled state transition system.
 The initial state is the empty multiset $\emptyset^\sharp$.
 A state transition is the application of a ground rule instance $ri = l \lrule{a} r$.
-We use $\lfacts(x)$ and $\pfacts(x)$ to denote the linear and persistent facts respectively in $x$.
-$ri$ can be applied if its premises are contained in the global state, which is then updated accordingly.
+We use $\lfacts(x)$ and $\pfacts(x)$ to denote the linear and persistent facts in $x$, respectively.
+A rule instance $ri$ can be applied if its premises are contained in the global state, which is then updated accordingly.
 Formally, the state transition relation $\Rightarrow_{(R, E)}$ is defined as:
 \begin{align*}
-  S \Rightarrow_{(R, E)} (S \setminus^\sharp \lfacts(l)) \cup^\sharp r && \text{if}~\lfacts(l) \subseteq^\sharp S, \pfacts(r) \subseteq \setof(S)
+  S \Rightarrow_{(R, E)} (S \setminus^\sharp \lfacts(l)) \cup^\sharp r && \text{if}~\lfacts(l) \subseteq^\sharp S, \pfacts(l) \subseteq \setof(S)
 \end{align*}
 
 An \emph{execution} is a sequence of labeled state transitions.
@@ -201,11 +200,12 @@ Assume that
 \end{enumerate*}
 $E$ has the \emph{finite variant property} for $\R$ and $AX$ if for all terms $t$ there is a finite set of substitutions $T = \{\tau_1, \dots, \tau_k\}$ such that for all substitutions $\sigma$ there is a substitution $\tau \in T$ and a substitution $\sigma'$ so that $t\sigma \normf^\R =_{AX} (t\tau \normf^\R) \sigma'$ and, for all variables $x$ occurring in $t$, we have $x\sigma \normf^\R =_{AX} x\tau\sigma'$.
 
-The set $\variants{t}^\R := \{ (t\tau_i\normf^\R, \tau_i) \mid 1 \leq i \leq k \}$ is a \emph{complete set of $\R,AX$-variants of $t$}.
+In the following, we will only consider equational theories $E$ and associated equational presentations $\R^\simeq \cup AX$ of $=_E$ such that $E$ has the finite variant property and such that $\R$ is $AX$-convergent and $AX$-coherent.
+When $E$ has the finite variant property for $\R$, the set $\variants{t}^\R := \{ (t\tau_i\normf^\R, \tau_i) \mid 1 \leq i \leq k \}$ is a \emph{complete set of $\R,AX$-variants of $t$}.
 We extend the notion of complete variants to multiset rewriting rules and multiset rewriting systems straightforwardly.
 Intuitively, the variants of a term or rule allow us to reason modulo $E$ by reasoning modulo normal forms and $AX$ only.
 
-\begin{theorem}[Changing the Equational Theory {\cite[p.114]{TamarinThesisInduction}}] \label{thm:reasoning-mod-ax}
+\begin{theorem}[Changing the Equational Theory {\cite[p.~114]{TamarinThesisInduction}}] \label{thm:reasoning-mod-ax}
   For every guarded\footnote{%
     Tamarin only considers trace properties that are \emph{guarded}, i.e., a subset of all possible trace properties.
     The details of guardedness are irrelevant to this work, and we thus omit a formal definition.
