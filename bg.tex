@@ -1,14 +1,19 @@
 We introduce the Tamarin prover following \cite{TamarinThesisInduction}.
 We omit certain details for clarity, and refer to \cite{TamarinThesisInduction} for full details.
-In Section~\ref{sec:preliminaries}, we introduce preliminaries that are independent of Tamarin itself: order-sorted term algebras, term rewriting, equational theories, and multisets.
-In Sections~\ref{subsec:protocol-specs}, \ref{subsec:semantics}, and~\ref{sec:ndgs}, we introduce Tamarin itself.
-We start with Tamarin's syntax, then introduce Tamarin's semantics, and finally explain how variants determine Tamarin's reasoning.
+To contextualize each subsection, we briefly provide an overview of this section's contents.
 
 Tamarin works in the \emph{symbolic model}, where protocol messages are represented as elements of a term algebra over a signature $\Sigma$.
 An equational theory encodes the semantics of these terms.
-Along with the equational theory, protocol and attacker behavior are specified by a set of multiset rewriting rules.
-A Tamarin protocol model is a pair of an equational theory and a set of multiset rewriting rules.
-The semantics of a Tamarin model is its set of associated traces, i.e., sequences of multiset rewriting rule applications.
+Tamarin only considers theories that have the \emph{finite variant property}, which allows it to efficiently implement unification.
+In Section~\ref{sec:preliminaries}, we introduce equational theories, the finite variant property, and other background relevant for Tamarin protocol models and their semantics.
+
+In Section~\ref{subsec:protocol-specs}, we define Tamarin protocol models, which comprise an equational theory and a set of multiset rewriting rules.
+Multiset rewriting rules constitute a protocol model's state transition system and model the behavior of honest protocol participants, the adversary, and domain assumptions such as who controls which cryptographic key.
+
+In Section~\ref{subsec:semantics}, we define the semantics of Tamarin protocol models.
+In short, a protocol model's semantics are the set of traces associated with its state transition system, i.e., sequences  of multiset rewriting rule applications.
+
+Utilizing the finite variant property, Tamarin only considers traces that are in a normal form with respect to the protocol model's equational theory, which we describe in Section~\ref{sec:ndgs}.
 For our optimization, we will require the result of Theorem~\ref{thm:reasoning-mod-ax}, which shows that reasoning about a set of protocol model rules modulo a full equational theory is equivalent to reasoning about a set of protocol model rule \emph{variants} modulo associativity and commutativity (if applicable).
 
 \subsection{Preliminaries}

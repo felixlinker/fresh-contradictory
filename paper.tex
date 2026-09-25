@@ -136,7 +136,7 @@ Tamarin reasons modulo this equational theory but only considers equational theo
 These properties allow Tamarin to compute the finite set of \emph{variants} associated to a term, which represent all potential shapes the term might take.
 Unifying two terms modulo a full equational theory, including associativity and commutativity, can be implemented by unifying the two terms' variants modulo associativity and commutativity only, which greatly simplifies Tamarin's proof search.
 
-Variants extend to more complex constructs, like protocol rules, and Tamarin computes protocol rule variants during a precomputation phase.
+Also constructs that are more complex than terms, for example, protocol rules can have variants, and Tamarin computes protocol rule variants during a precomputation phase.
 In this paper, we prove that certain rule variants correspond to protocol rule instances that could never occur in a run of a protocol.
 Thus, any constraint system containing them can be considered contradictory and one can safely ignore such rule variants.
 We experienced significant performance improvements when using this pruning mechanism, in particular when modelling protocols that use Diffie-Hellman group operators.
@@ -150,6 +150,10 @@ We proceed as follows.
 We introduce relevant background in Section~\ref{sec:bg}.
 Then, in Section~\ref{sec:theory}, we introduce our optimization and prove its soundness by relating it to a soundness proof in one of the original theses describing Tamarin.
 We evaluate our optimization's performance in Section~\ref{sec:eval}.
+
+As our optimization's correctness proof requires substantial background, Section~\ref{sec:bg} is quite long.
+The benefit of that, though, is that this paper is mostly self-contained, and may serve as a helpful introduction to the finite variant property and its application to the Tamarin prover.
+For a more complete introduction, we refer the reader to \cite{Variants}.
 
 \section{Background}
 \label{sec:bg}
