@@ -1,5 +1,7 @@
-We integrated the optimization of discarding fresh-contradictory rule variants into Tamarin's precomputation phase.
-The implementation was straightforward and only required around 20 lines of code at its core.
+We implemented our optimization by discarding fresh-contradictory rule variants during Tamarin's precomputations.
+The implementation was straightforward and only required around 20 lines of code at its core.\footnote{%
+  See \url{https://github.com/tamarin-prover/tamarin-prover/pull/763}.
+}
 
 We evaluated whether the optimization improves performance on 19 authenticated key exchange examples, all of which use equational theories with cancellative operators to model Diffie--Hellman exponentiation and bilinear pairings.
 These examples were taken from the Tamarin prover repository \cite{TamarinRepoVariantRestrictions} (located at \texttt{examples/ake/}).
@@ -13,7 +15,7 @@ When proof time increases, it does so by only 5\% at most.
 
 To understand why our optimization can also degrade performance, we manually investigated some theories, for which proof time increases.
 With our optimization, we observed that Tamarin solves some equations earlier than before, although solving these equations does not aid the overall proof.
-This is because Tamarin's heuristics prioritize solving equations with many and few cases differently, and our optimization reduces an equation's cases, leading it to being prioritized differently.
+This is because Tamarin's heuristics prioritize solving equations with many and few cases differently, and our optimization reduces some equations' cases, leading it to being prioritized differently.
 We thus attribute worsened performance to unfavorable interactions between our optimization and existing Tamarin heuristics.
 
 Figure~\ref{fig:precomp} illustrates that our optimization also improves the performance of Tamarin's precomputations for all but one theory.

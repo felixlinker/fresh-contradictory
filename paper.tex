@@ -124,7 +124,7 @@ This work showed me how much David had taught me during my doctorate, which is w
 
 Tamarin operates in the so-called \emph{symbolic model}, in which cryptography is modelled by an \emph{equational theory}.
 Concretely, cryptographic messages are represented by terms and uninterpreted functions, and the effects of cryptographic operations by equations on these terms.
-Tamarin reasons modulo this equational theory but only considers equational theories with specific properties.
+Tamarin reasons modulo such an equational theory but only considers equational theories with specific properties.
 These properties allow Tamarin to compute the finite set of \emph{variants} associated to a term, which represent all potential shapes the term might take.
 Unifying two terms modulo a full equational theory, including associativity and commutativity, can be implemented by unifying the two terms' variants modulo associativity and commutativity only, which greatly simplifies Tamarin's proof search.
 
@@ -143,7 +143,7 @@ We introduce relevant background in Section~\ref{sec:bg}.
 Then, in Section~\ref{sec:theory}, we introduce our optimization and prove its soundness by relating it to a soundness proof in one of the original theses describing Tamarin.
 We evaluate our optimization's performance in Section~\ref{sec:eval}.
 
-As our optimization's correctness proof requires substantial background, Section~\ref{sec:bg} is quite long.
+As our optimization's soundness proof requires substantial background, Section~\ref{sec:bg} is quite long.
 The benefit of that, though, is that this paper is mostly self-contained, and may serve as a helpful introduction to the finite variant property and its application to the Tamarin prover.
 For a more complete introduction, we refer the reader to \cite{Variants}.
 
@@ -171,7 +171,7 @@ During precomputation, Tamarin will consider the case in which raising $m$ to $x
 $$[ \Fr(\ofsort{x}{\fresh}), \In(z^{(\ofsort{x}{\fresh})^{-1}}) ] \rightarrow [ \Out(z) ].$$
 
 Note, though, that constructing $m = z^{(\ofsort{x}{\fresh})^{-1}}$ requires knowledge of $x$ to raise $z$ to $x$'s inverse.
-The above rule, though, freshly introduced $x$.
+The above rule, though, freshly introduces $x$.
 Thus, constructing $m$ requires $x$ to be used before it is introduced, which is impossible.
 
 \emph{Fresh-contradictory rule variants}, which we define below, formalize the above intuition.
