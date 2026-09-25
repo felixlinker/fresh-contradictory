@@ -1,22 +1,14 @@
-\documentclass[runningheads]{llncs}
+\documentclass[envcountsame,orivec]{llncs}
 
 \usepackage[T1]{fontenc}
-\usepackage[svgnames]{xcolor}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage[inline]{enumitem}
-\usepackage{hyperref}
-% \hypersetup{
-% 	bookmarksdepth = 1,
-% 	colorlinks = {true},
-% 	citecolor = {ForestGreen},
-% 	linkcolor={ForestGreen},
-% 	urlcolor={gray},
-% }
-\usepackage{subcaption}
-
-\usepackage[sortcites,style=numeric-comp,maxbibnames=99, maxcitenames=99]{biblatex}
-\addbibresource{references.bib}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Rule Variant Restrictions for the Tamarin Prover},
+  pdfauthor={Felix Linker}
+}
 
 \newcommand{\branch}[0]{\ensuremath{\mathrel{\|}}}
 \newcommand{\bigbranch}[0]{\ensuremath{\big\|}}
@@ -61,7 +53,7 @@
 \newcommand{\IH}{\ensuremath{\textsc{IH}}}
 \newcommand{\R}{\ensuremath{\mathcal{R}}}
 
-\newcommand{\RFresh}[0]{\ensuremath{\textsc{Fresh}}}
+\newcommand{\RFresh}[0]{\ensuremath{\textnormal{\textsc{Fresh}}}}
 \newcommand{\K}[0]{\ensuremath{\fact{K}}}
 \newcommand{\Kup}[0]{\ensuremath{\fact{!K}^{\uparrow}}}
 \newcommand{\Kdown}[0]{\ensuremath{\fact{!K}^{\downarrow}}}
@@ -260,6 +252,7 @@ For future work and as an alternative to our optimization, one could explore lif
 Moreover, in Section~\ref{sec:eval}, we discussed that Tamarin's heuristics do not always interact favorably with our optimization.
 Thus, we suggest updating Tamarin's heuristics to account for our optimization.
 
-\printbibliography
+\bibliographystyle{splncs04}
+\bibliography{references}
 
 \end{document}
